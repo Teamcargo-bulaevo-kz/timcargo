@@ -3,22 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-
-  <!-- ==================== SEO МЕТА-ТЕГИ ==================== -->
   <meta name="description" content="TimCargo Булаево — карго-доставка из Китая. Быстро, надёжно и по фактическому весу. Доставка от 8 дней, тарифы от 2000 тг/кг. Самовывоз в Булаево.">
   <meta name="keywords" content="карго, доставка из Китая, Булаево, карго Булаево, посылки из Китая, доставка по весу, TimCargo, карго тарифы, негабарит">
   <meta name="author" content="TimCargo">
   <meta name="theme-color" content="#0a0a0a">
-
   <title>TimCargo Булаево | Карго-доставка из Китая</title>
-
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
 
-  <!-- Подключаем библиотеку Tesseract.js -->
+  <!-- Tesseract.js с поддержкой русского, английского и китайского (упрощённый) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
-    /* ========== СТИЛИ (те же, что и ранее) ========== */
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #141414;
@@ -40,9 +35,7 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; font-size: 16px; }
-
     body {
       font-family: var(--font-main);
       background-color: var(--bg-primary);
@@ -53,9 +46,7 @@
       background-image: radial-gradient(circle at 20% 10%, rgba(232, 17, 45, 0.08) 0%, transparent 35%);
       background-attachment: fixed;
     }
-
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
-
     h2 {
       font-size: clamp(2rem, 6vw, 2.8rem);
       font-weight: 700;
@@ -66,13 +57,10 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
     .section-title { text-align: center; margin-bottom: 2.5rem; }
     .section-title p { color: var(--text-secondary); font-size: 1.1rem; max-width: 550px; margin: 0 auto; }
-
     .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
-
     .header { display: flex; justify-content: center; align-items: center; padding: 2rem 0 1rem; }
     .logo-area { display: flex; align-items: center; gap: 12px; }
     .logo-icon { font-size: 2.8rem; filter: drop-shadow(0 0 12px var(--red-accent)); animation: float 3s ease-in-out infinite; }
@@ -83,7 +71,6 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .logo-text span { color: var(--red-accent); background: none; -webkit-text-fill-color: var(--red-accent); }
-
     .hero { text-align: center; padding: 1.5rem 0 3rem; }
     .hero h1 { font-size: clamp(2.2rem, 8vw, 3.6rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -1.2px; }
     .hero .highlight { color: var(--red-accent); text-shadow: 0 0 25px var(--red-glow); }
@@ -91,7 +78,6 @@
     .hero-features { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.8rem 1.8rem; margin: 1.2rem 0 2rem; color: var(--text-secondary); font-weight: 500; }
     .hero-features span::before { content: "•"; color: var(--red-accent); margin-right: 6px; font-weight: bold; }
     .hero-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-bottom: 1.5rem; }
-
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 1rem 2.2rem; border-radius: 50px; font-weight: 600; font-size: 1.05rem;
@@ -103,7 +89,6 @@
     .btn-outline { background: transparent; color: white; border: 1.5px solid var(--border-color); backdrop-filter: blur(4px); }
     .btn-outline:hover { border-color: var(--red-accent); box-shadow: 0 0 20px rgba(232,17,45,0.25); background: rgba(232,17,45,0.08); transform: translateY(-2px); }
     .btn-small { padding: 0.7rem 1.6rem; font-size: 0.9rem; }
-
     .qr-block {
       display: flex;
       flex-direction: column;
@@ -126,10 +111,8 @@
       color: var(--text-muted);
       font-size: 0.85rem;
     }
-
     .sticky-contact { position: fixed; bottom: 25px; right: 25px; z-index: 999; display: none; animation: pop-in 0.4s ease; }
     @keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
     .tariffs-section { padding: 3rem 0; }
     .tariff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 1.8rem; }
     .tariff-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.8rem 1.2rem; text-align: center; transition: var(--transition-smooth); }
@@ -141,20 +124,16 @@
     .oversize-card { background: linear-gradient(145deg, #1c1012, #1a1a1a); border: 1px dashed var(--red-accent); border-radius: var(--radius-md); padding: 1.5rem 2rem; text-align: center; max-width: 450px; margin: 0 auto; }
     .oversize-card h4 { color: var(--red-accent); font-size: 1.2rem; margin-bottom: 0.3rem; }
     .oversize-card .price { font-size: 1.8rem; font-weight: 700; }
-
     .info-section { padding: 2.5rem 0; }
     .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
     .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 1.5rem 1.2rem; display: flex; align-items: flex-start; gap: 14px; border: 1px solid transparent; transition: var(--transition-smooth); }
     .info-item:hover { border-color: var(--border-color); box-shadow: 0 5px 20px rgba(0,0,0,0.4); }
     .info-icon { font-size: 2rem; flex-shrink: 0; }
-
     .gallery-section { padding: 2.5rem 0; }
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
     .gallery-item { background: var(--bg-card); border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 1 / 1; border: 1px solid var(--border-color); transition: var(--transition-smooth); }
     .gallery-item iframe { width: 100%; height: 100%; border: none; }
     .gallery-item:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
-
-    /* Блок проверки адреса */
     .address-check-section { padding: 2.5rem 0; }
     .check-card {
       background: var(--bg-card);
@@ -227,13 +206,11 @@
       margin-right: 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .tutorials-section { padding: 2.5rem 0; }
     .tutorial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
     .tutorial-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; transition: var(--transition-smooth); }
     .tutorial-card:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
     .tutorial-card h3 { font-size: 1.3rem; margin-bottom: 0.8rem; }
-
     .address-lines { background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 0.8rem; margin: 1rem 0; }
     .address-row { display: flex; align-items: center; justify-content: space-between; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 6px; font-family: 'Courier New', monospace; font-size: 0.9rem; word-break: break-all; }
     .address-row span { margin-right: 10px; }
@@ -246,11 +223,9 @@
     .copy-btn:hover { background: var(--red-accent); color: white; }
     .copy-btn:active { transform: scale(0.95); }
     .reminder { font-size: 0.9rem; color: var(--red-accent); margin-top: 0.8rem; font-weight: 500; text-align: center; }
-
     .contacts-section { padding: 2.5rem 0; }
     .contact-buttons { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-bottom: 1.5rem; }
     .contact-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 1.8rem; text-align: center; border: 1px solid var(--border-color); max-width: 480px; margin: 0 auto; }
-
     .faq-section { padding: 2.5rem 0 3rem; }
     .faq-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 10px; overflow: hidden; }
     .faq-question { width: 100%; background: none; border: none; color: var(--text-primary); padding: 1.2rem 1.5rem; text-align: left; font-size: 1.05rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-family: var(--font-main); }
@@ -258,9 +233,7 @@
     .faq-item.open .faq-icon { transform: rotate(45deg); }
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 1.5rem; color: var(--text-secondary); }
     .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 1.2rem; }
-
     .footer { text-align: center; padding: 2.5rem 0 2rem; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem; }
-
     @media (max-width: 600px) {
       .btn { width: 100%; justify-content: center; }
       .hero-buttons { flex-direction: column; align-items: stretch; }
@@ -269,387 +242,230 @@
       .tutorial-grid { grid-template-columns: 1fr; }
     }
   </style>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <header class="header container">
-    <div class="logo-area">
-      <div class="logo-icon">📦</div>
-      <div class="logo-text">Tim<span>Cargo</span> <span style="font-size:1.4rem;">Булаево</span></div>
-    </div>
-  </header>
+<header class="header container">
+  <div class="logo-area">
+    <div class="logo-icon">📦</div>
+    <div class="logo-text">Tim<span>Cargo</span> <span style="font-size:1.4rem;">Булаево</span></div>
+  </div>
+</header>
 
-  <section class="hero container fade-up" id="hero">
-    <h1>Карго доставка <br><span class="highlight">из Китая</span></h1>
-    <p class="hero-tagline">Ваши покупки — наша забота</p>
-    <div class="hero-features">
-      <span>Быстро</span>
-      <span>Надёжно</span>
-      <span>По факту веса</span>
+<section class="hero container fade-up" id="hero">
+  <h1>Карго доставка <br><span class="highlight">из Китая</span></h1>
+  <p class="hero-tagline">Ваши покупки — наша забота</p>
+  <div class="hero-features">
+    <span>Быстро</span>
+    <span>Надёжно</span>
+    <span>По факту веса</span>
+  </div>
+  <div class="hero-buttons">
+    <a href="#contacts" class="btn btn-primary">💬 Связаться</a>
+    <button class="btn btn-outline" id="shareBtn">🔗 Поделиться сайтом</button>
+  </div>
+  <div class="qr-block">
+    <img src="qr.jpeg" alt="QR-код сайта" id="qrCodeImg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <span style="display:none;">📱 Место для QR-кода</span>
+    <span>Отсканируйте, чтобы открыть сайт</span>
+  </div>
+</section>
+
+<main class="container">
+  <section class="tariffs-section fade-up" id="tariffs">
+    <div class="section-title"><h2>Тарифы на доставку</h2><p>Прозрачные цены без скрытых платежей. Оплата только за фактический вес.</p></div>
+    <div class="tariff-grid">
+      <div class="tariff-card"><div class="tariff-weight">от 100 г</div><div class="tariff-price">2150 <small>тг</small></div></div>
+      <div class="tariff-card"><div class="tariff-weight">от 5 кг</div><div class="tariff-price">2100 <small>тг</small></div></div>
+      <div class="tariff-card"><div class="tariff-weight">от 10 кг</div><div class="tariff-price">2050 <small>тг</small></div></div>
+      <div class="tariff-card"><div class="tariff-weight">от 20 кг</div><div class="tariff-price">2000 <small>тг</small></div></div>
     </div>
-    <div class="hero-buttons">
-      <a href="#contacts" class="btn btn-primary">💬 Связаться</a>
-      <button class="btn btn-outline" id="shareBtn">🔗 Поделиться сайтом</button>
-    </div>
-    <!-- Блок с QR-кодом -->
-    <div class="qr-block">
-      <img src="qr.jpeg" alt="QR-код сайта" id="qrCodeImg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <span style="display:none;">📱 Место для QR-кода</span>
-      <span>Отсканируйте, чтобы открыть сайт</span>
+    <div class="oversize-card"><h4>🚛 Негабаритный груз</h4><p class="price">2350 тг/кг <span style="font-size:0.9rem; color:var(--text-secondary);">+ 2500 тг перегруз</span></p></div>
+  </section>
+
+  <section class="info-section fade-up" id="info">
+    <div class="section-title"><h2>Почему выбирают нас</h2></div>
+    <div class="info-grid">
+      <div class="info-item"><div class="info-icon">⏱️</div><div class="info-text"><strong>Доставка от 8 дней</strong><br><span>Быстрая логистика из Китая</span></div></div>
+      <div class="info-item"><div class="info-icon">⚖️</div><div class="info-text"><strong>Фактический вес</strong><br><span>Без округлений</span></div></div>
+      <div class="info-item"><div class="info-icon">🚚</div><div class="info-text"><strong>Бесплатная доставка</strong><br><span>По Булаево от 3 кг</span></div></div>
+      <div class="info-item"><div class="info-icon">📍</div><div class="info-text"><strong>Самовывоз</strong><br><span>ул. Целинная 30, 10:00–20:00</span></div></div>
     </div>
   </section>
 
-  <main class="container">
-
-    <!-- Тарифы -->
-    <section class="tariffs-section fade-up" id="tariffs">
-      <div class="section-title">
-        <h2>Тарифы на доставку</h2>
-        <p>Прозрачные цены без скрытых платежей. Оплата только за фактический вес.</p>
-      </div>
-      <div class="tariff-grid">
-        <div class="tariff-card"><div class="tariff-weight">от 100 г</div><div class="tariff-price">2150 <small>тг</small></div></div>
-        <div class="tariff-card"><div class="tariff-weight">от 5 кг</div><div class="tariff-price">2100 <small>тг</small></div></div>
-        <div class="tariff-card"><div class="tariff-weight">от 10 кг</div><div class="tariff-price">2050 <small>тг</small></div></div>
-        <div class="tariff-card"><div class="tariff-weight">от 20 кг</div><div class="tariff-price">2000 <small>тг</small></div></div>
-      </div>
-      <div class="oversize-card">
-        <h4>🚛 Негабаритный груз</h4>
-        <p class="price">2350 тг/кг <span style="font-size:0.9rem; color:var(--text-secondary);">+ 2500 тг перегруз</span></p>
-      </div>
-    </section>
-
-    <!-- Инфо -->
-    <section class="info-section fade-up" id="info">
-      <div class="section-title"><h2>Почему выбирают нас</h2></div>
-      <div class="info-grid">
-        <div class="info-item"><div class="info-icon">⏱️</div><div class="info-text"><strong>Доставка от 8 дней</strong><br><span>Быстрая логистика из Китая</span></div></div>
-        <div class="info-item"><div class="info-icon">⚖️</div><div class="info-text"><strong>Фактический вес</strong><br><span>Без округлений</span></div></div>
-        <div class="info-item"><div class="info-icon">🚚</div><div class="info-text"><strong>Бесплатная доставка</strong><br><span>По Булаево от 3 кг</span></div></div>
-        <div class="info-item"><div class="info-icon">📍</div><div class="info-text"><strong>Самовывоз</strong><br><span>ул. Целинная 30, 10:00–20:00</span></div></div>
-      </div>
-    </section>
-
-    <!-- Галерея -->
-    <section class="gallery-section fade-up" id="gallery">
-      <div class="section-title">
-        <h2>Фото и видео</h2>
-        <p>Посылки, склад, оплата и другие материалы</p>
-      </div>
-      <div class="gallery-grid">
-        <div class="gallery-item"><img src="placeholder1.jpg" alt="Фото" onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>📷 Фото</div>'"></div>
-        <div class="gallery-item"><img src="placeholder2.jpg" alt="Склад" onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>🏭 Склад</div>'"></div>
-        <div class="gallery-item">
-          <iframe src="https://www.youtube.com/embed/R9tOwPetH7M?rel=0&modestbranding=1" 
-                  title="Видео выдачи" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-          </iframe>
-        </div>
-        <div class="gallery-item"><img src="placeholder1.jpg" alt="Доп." onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>📦 Посылка</div>'"></div>
-      </div>
-      <p style="text-align:center; margin-top:0.8rem; font-size:0.8rem; color:var(--text-muted);">
-        ⚠️ Замените фото и видео на свои.
-      </p>
-    </section>
-
-    <!-- НОВЫЙ БЛОК: Проверка адреса по скриншоту (Tesseract.js) -->
-    <section class="address-check-section fade-up" id="addressCheck">
-      <div class="section-title">
-        <h2>📸 Проверка адреса по скриншоту</h2>
-        <p>Загрузите фото (скриншот) из Pinduoduo — ИИ проверит корректность адреса доставки</p>
-      </div>
-      <div class="check-card">
-        <div class="file-upload-area">
-          <label class="file-label" for="screenshotInput">📂 Выбрать скриншот</label>
-          <input type="file" id="screenshotInput" accept="image/*" style="display:none;">
-          <img id="previewImage" class="preview-img" alt="Предпросмотр">
-        </div>
-        <textarea id="customQuestion" class="question-input" rows="2" placeholder="(Необязательно) Ваш дополнительный вопрос о фото, например: «Что не так с этим адресом?»"></textarea>
-        <button id="analyzeBtn" class="btn btn-primary analyze-btn">🔍 Проверить адрес</button>
-        <div id="resultArea" class="result-box" style="display:none;"></div>
-      </div>
-    </section>
-
-    <!-- Инструкции -->
-    <section class="tutorials-section fade-up" id="tutorials">
-      <div class="section-title">
-        <h2>Как это работает</h2>
-        <p>Простые видеоинструкции для вашего удобства</p>
-      </div>
-
-      <div class="tutorial-grid">
-        <!-- Адрес + видео -->
-        <div class="tutorial-card">
-          <h3>🏠 Адрес для заказов</h3>
-          <p>Скопируйте строки ниже и вставьте в адрес доставки приложения Pinduoduo</p>
-          <iframe src="https://www.youtube.com/embed/R9tOwPetH7M?rel=0&modestbranding=1" 
-                  style="width:100%; aspect-ratio:16/9; border-radius:12px; border:none; margin-bottom:1rem;" 
-                  title="Видео: настройка адреса" allowfullscreen>
-          </iframe>
-          <div class="address-lines">
-            <div class="address-row">
-              <span>低调NORD 001</span>
-              <button class="copy-btn" data-copy="低调NORD 001">📋 Копировать</button>
-            </div>
-            <div class="address-row">
-              <span>18957788787</span>
-              <button class="copy-btn" data-copy="18957788787">📋 Копировать</button>
-            </div>
-            <div class="address-row">
-              <span>浙江省 金华市 义乌市</span>
-              <button class="copy-btn" data-copy="浙江省 金华市 义乌市">📋 Копировать</button>
-            </div>
-            <div class="address-row">
-              <span>福田街道 龙岗路一街6号 8787库房 (低调NORD)</span>
-              <button class="copy-btn" data-copy="福田街道 龙岗路一街6号 8787库房 (低调NORD)">📋 Копировать</button>
-            </div>
-          </div>
-          <div class="reminder">
-            ⚠️ Личный код по типу " 1234 22" обязателен!<br>
-            После настройки обязательно напишите менеджеру для проверки адреса.
-          </div>
-        </div>
-
-        <!-- Привязка карты -->
-        <div class="tutorial-card">
-          <h3>💳 Как привязать карту</h3>
-          <p>Добавьте карту любого банка РК для быстрой оплаты. Это безопасно.</p>
-          <div style="background:#111; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; color:var(--text-muted);">
-            🎬 Видео скоро появится
-          </div>
-          <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.4rem;">⚠️ Вставьте ссылку на видео в src</p>
-        </div>
-
-        <!-- Отслеживание -->
-        <div class="tutorial-card">
-          <h3>🔍 Как отследить посылку</h3>
-          <p>Получите трек-номер и проверяйте статус в реальном времени.</p>
-          <iframe src="https://www.youtube.com/embed/PRontztzV80?rel=0&modestbranding=1" 
-                  style="width:100%; aspect-ratio:16/9; border-radius:12px; border:none;" 
-                  title="Видео: отслеживание" allowfullscreen>
-          </iframe>
-        </div>
-      </div>
-    </section>
-
-    <!-- Контакты -->
-    <section class="contacts-section fade-up" id="contacts">
-      <div class="section-title"><h2>Свяжитесь с нами</h2></div>
-      <div class="contact-buttons">
-        <a href="https://wa.me/77773363666" target="_blank" class="btn btn-primary">💬 WhatsApp</a>
-        <a href="https://t.me/TimCargoBot" target="_blank" class="btn btn-outline">✈️ Telegram</a>
-        <a href="tel:+77773363666" class="btn btn-outline">📞 Позвонить</a>
-      </div>
-      <div class="contact-card">
-        <p><strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30</p>
-        <p><strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00</p>
-        <button class="btn btn-outline btn-small" id="mapBtn">🗺️ Открыть карту (2GIS)</button>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq-section fade-up" id="faq">
-      <div class="section-title"><h2>Часто спрашивают</h2></div>
-      <div class="faq-item">
-        <button class="faq-question">⚖️ Как считается вес? <span class="faq-icon">+</span></button>
-        <div class="faq-answer">Взвешиваем от 100 грамм на точных весах, фиксируем фактический вес в кг. Никакого округления вверх.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">⏳ Сколько идет доставка? <span class="faq-icon">+</span></button>
-        <div class="faq-answer">В среднем от 8 до 14 дней из Китая в Булаево.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">📦 Как получить посылку? <span class="faq-icon">+</span></button>
-        <div class="faq-answer">Самовывоз: ул. Целинная, 30, ежедневно 10:00–20:00. Или бесплатная доставка от 3 кг.</div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p><strong>TimCargo Булаево</strong> — Доставка товаров из Китая</p>
-      <p>© 2026 Все права защищены</p>
+  <section class="gallery-section fade-up" id="gallery">
+    <div class="section-title"><h2>Фото и видео</h2><p>Посылки, склад, оплата и другие материалы</p></div>
+    <div class="gallery-grid">
+      <div class="gallery-item"><img src="placeholder1.jpg" alt="Фото" onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>📷 Фото</div>'"></div>
+      <div class="gallery-item"><img src="placeholder2.jpg" alt="Склад" onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>🏭 Склад</div>'"></div>
+      <div class="gallery-item"><iframe src="https://www.youtube.com/embed/R9tOwPetH7M?rel=0&modestbranding=1" title="Видео выдачи" allowfullscreen></iframe></div>
+      <div class="gallery-item"><img src="placeholder1.jpg" alt="Доп." onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>📦 Посылка</div>'"></div>
     </div>
-  </footer>
+    <p style="text-align:center; margin-top:0.8rem; font-size:0.8rem; color:var(--text-muted);">⚠️ Замените фото и видео на свои.</p>
+  </section>
 
-  <div class="sticky-contact" id="stickyContactBtn">
-    <a href="#contacts" class="btn btn-primary">💬 Связаться</a>
-  </div>
+  <!-- Блок проверки адреса с поддержкой китайского -->
+  <section class="address-check-section fade-up" id="addressCheck">
+    <div class="section-title">
+      <h2>📸 Проверка адреса по скриншоту</h2>
+      <p>Загрузите фото (скриншот) из Pinduoduo — ИИ проверит корректность адреса доставки</p>
+    </div>
+    <div class="check-card">
+      <div class="file-upload-area">
+        <label class="file-label" for="screenshotInput">📂 Выбрать скриншот</label>
+        <input type="file" id="screenshotInput" accept="image/*" style="display:none;">
+        <img id="previewImage" class="preview-img" alt="Предпросмотр">
+      </div>
+      <textarea id="customQuestion" class="question-input" rows="2" placeholder="(Необязательно) Ваш дополнительный вопрос о фото, например: «Что не так с этим адресом?»"></textarea>
+      <button id="analyzeBtn" class="btn btn-primary analyze-btn">🔍 Проверить адрес</button>
+      <div id="resultArea" class="result-box" style="display:none;"></div>
+    </div>
+  </section>
 
-  <script>
-    (function() {
-      // Анимация появления
-      const fadeElements = document.querySelectorAll('.fade-up');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15 });
-      fadeElements.forEach(el => observer.observe(el));
+  <section class="tutorials-section fade-up" id="tutorials">
+    <div class="section-title"><h2>Как это работает</h2><p>Простые видеоинструкции для вашего удобства</p></div>
+    <div class="tutorial-grid">
+      <div class="tutorial-card">
+        <h3>🏠 Адрес для заказов</h3>
+        <p>Скопируйте строки ниже и вставьте в адрес доставки приложения Pinduoduo</p>
+        <iframe src="https://www.youtube.com/embed/R9tOwPetH7M?rel=0&modestbranding=1" style="width:100%; aspect-ratio:16/9; border-radius:12px; border:none; margin-bottom:1rem;" title="Видео: настройка адреса" allowfullscreen></iframe>
+        <div class="address-lines">
+          <div class="address-row"><span>低调NORD 001</span><button class="copy-btn" data-copy="低调NORD 001">📋 Копировать</button></div>
+          <div class="address-row"><span>18957788787</span><button class="copy-btn" data-copy="18957788787">📋 Копировать</button></div>
+          <div class="address-row"><span>浙江省 金华市 义乌市</span><button class="copy-btn" data-copy="浙江省 金华市 义乌市">📋 Копировать</button></div>
+          <div class="address-row"><span>福田街道 龙岗路一街6号 8787库房 (低调NORD)</span><button class="copy-btn" data-copy="福田街道 龙岗路一街6号 8787库房 (低调NORD)">📋 Копировать</button></div>
+        </div>
+        <div class="reminder">⚠️ Личный код по типу " 1234 22" обязателен!<br>После настройки обязательно напишите менеджеру для проверки адреса.</div>
+      </div>
+      <div class="tutorial-card"><h3>💳 Как привязать карту</h3><p>Добавьте карту любого банка РК для быстрой оплаты. Это безопасно.</p><div style="background:#111; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; color:var(--text-muted);">🎬 Видео скоро появится</div><p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.4rem;">⚠️ Вставьте ссылку на видео в src</p></div>
+      <div class="tutorial-card"><h3>🔍 Как отследить посылку</h3><p>Получите трек-номер и проверяйте статус в реальном времени.</p><iframe src="https://www.youtube.com/embed/PRontztzV80?rel=0&modestbranding=1" style="width:100%; aspect-ratio:16/9; border-radius:12px; border:none;" title="Видео: отслеживание" allowfullscreen></iframe></div>
+    </div>
+  </section>
 
-      // Липкая кнопка
-      const stickyBtn = document.getElementById('stickyContactBtn');
-      const heroSection = document.getElementById('hero');
-      function toggleSticky() {
-        if (stickyBtn && heroSection) {
-          stickyBtn.style.display = heroSection.getBoundingClientRect().bottom < 0 ? 'block' : 'none';
-        }
-      }
-      window.addEventListener('scroll', toggleSticky, { passive: true });
-      window.addEventListener('load', toggleSticky);
+  <section class="contacts-section fade-up" id="contacts">
+    <div class="section-title"><h2>Свяжитесь с нами</h2></div>
+    <div class="contact-buttons">
+      <a href="https://wa.me/77773363666" target="_blank" class="btn btn-primary">💬 WhatsApp</a>
+      <a href="https://t.me/TimCargoBot" target="_blank" class="btn btn-outline">✈️ Telegram</a>
+      <a href="tel:+77773363666" class="btn btn-outline">📞 Позвонить</a>
+    </div>
+    <div class="contact-card">
+      <p><strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30</p>
+      <p><strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00</p>
+      <button class="btn btn-outline btn-small" id="mapBtn">🗺️ Открыть карту (2GIS)</button>
+    </div>
+  </section>
 
-      // Поделиться
-      document.getElementById('shareBtn').addEventListener('click', async () => {
-        const data = { title: 'TimCargo Булаево', text: 'Карго из Китая', url: window.location.href };
-        if (navigator.share) {
-          try { await navigator.share(data); } catch {}
-        } else {
-          try { await navigator.clipboard.writeText(window.location.href); alert('✅ Ссылка скопирована!'); }
-          catch { prompt('Скопируйте ссылку:', window.location.href); }
-        }
+  <section class="faq-section fade-up" id="faq">
+    <div class="section-title"><h2>Часто спрашивают</h2></div>
+    <div class="faq-item"><button class="faq-question">⚖️ Как считается вес? <span class="faq-icon">+</span></button><div class="faq-answer">Взвешиваем от 100 грамм на точных весах, фиксируем фактический вес в кг. Никакого округления вверх.</div></div>
+    <div class="faq-item"><button class="faq-question">⏳ Сколько идет доставка? <span class="faq-icon">+</span></button><div class="faq-answer">В среднем от 8 до 14 дней из Китая в Булаево.</div></div>
+    <div class="faq-item"><button class="faq-question">📦 Как получить посылку? <span class="faq-icon">+</span></button><div class="faq-answer">Самовывоз: ул. Целинная, 30, ежедневно 10:00–20:00. Или бесплатная доставка от 3 кг.</div></div>
+  </section>
+</main>
+
+<footer class="footer"><div class="container"><p><strong>TimCargo Булаево</strong> — Доставка товаров из Китая</p><p>© 2026 Все права защищены</p></div></footer>
+<div class="sticky-contact" id="stickyContactBtn"><a href="#contacts" class="btn btn-primary">💬 Связаться</a></div>
+
+<script>
+  (function() {
+    // Анимация
+    const fadeElements = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.15 });
+    fadeElements.forEach(el => observer.observe(el));
+
+    // Липкая кнопка
+    const stickyBtn = document.getElementById('stickyContactBtn');
+    const heroSection = document.getElementById('hero');
+    function toggleSticky() { if (stickyBtn && heroSection) stickyBtn.style.display = heroSection.getBoundingClientRect().bottom < 0 ? 'block' : 'none'; }
+    window.addEventListener('scroll', toggleSticky, { passive: true });
+    window.addEventListener('load', toggleSticky);
+
+    // Поделиться
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const data = { title: 'TimCargo Булаево', text: 'Карго из Китая', url: window.location.href };
+      if (navigator.share) { try { await navigator.share(data); } catch {} }
+      else { try { await navigator.clipboard.writeText(window.location.href); alert('✅ Ссылка скопирована!'); } catch { prompt('Скопируйте ссылку:', window.location.href); } }
+    });
+    document.getElementById('mapBtn').addEventListener('click', () => { window.open('https://2gis.kz/bulaevo/geo/70030076178855490', '_blank'); });
+
+    function copyToClipboard(text) {
+      const textarea = document.createElement('textarea'); textarea.value = text; textarea.style.position = 'fixed'; textarea.style.left = '-9999px'; document.body.appendChild(textarea); textarea.select();
+      try { document.execCommand('copy'); return true; } catch (err) { return false; } finally { document.body.removeChild(textarea); }
+    }
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy');
+        if (copyToClipboard(text)) {
+          btn.innerHTML = '✅ Скопировано'; btn.style.background = 'var(--red-accent)'; btn.style.color = 'white';
+          setTimeout(() => { btn.innerHTML = '📋 Копировать'; btn.style.background = 'transparent'; btn.style.color = 'var(--red-accent)'; }, 1500);
+        } else alert('Не удалось скопировать. Попробуйте вручную: ' + text);
       });
-
-      // Карта
-      document.getElementById('mapBtn').addEventListener('click', () => {
-        window.open('https://2gis.kz/bulaevo/geo/70030076178855490', '_blank');
+    });
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.parentElement;
+        document.querySelectorAll('.faq-item.open').forEach(open => { if (open !== item) open.classList.remove('open'); });
+        item.classList.toggle('open');
       });
+    });
 
-      // Копирование адресных строк
-      function copyToClipboard(text) {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        textarea.style.left = '-9999px';
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-          document.execCommand('copy');
-          return true;
-        } catch (err) {
-          return false;
-        } finally {
-          document.body.removeChild(textarea);
-        }
-      }
+    // ========== АНАЛИЗ ФОТО С ПОДДЕРЖКОЙ КИТАЙСКОГО ==========
+    const screenshotInput = document.getElementById('screenshotInput');
+    const previewImg = document.getElementById('previewImage');
+    const customQuestion = document.getElementById('customQuestion');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultArea = document.getElementById('resultArea');
 
-      document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const text = btn.getAttribute('data-copy');
-          if (copyToClipboard(text)) {
-            btn.innerHTML = '✅ Скопировано';
-            btn.style.background = 'var(--red-accent)';
-            btn.style.color = 'white';
-            setTimeout(() => {
-              btn.innerHTML = '📋 Копировать';
-              btn.style.background = 'transparent';
-              btn.style.color = 'var(--red-accent)';
-            }, 1500);
-          } else {
-            alert('Не удалось скопировать. Попробуйте вручную: ' + text);
-          }
-        });
-      });
+    screenshotInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) { previewImg.src = e.target.result; previewImg.style.display = 'block'; };
+        reader.readAsDataURL(file);
+        resultArea.style.display = 'none';
+      } else previewImg.style.display = 'none';
+    });
 
-      // FAQ
-      document.querySelectorAll('.faq-question').forEach(q => {
-        q.addEventListener('click', () => {
-          const item = q.parentElement;
-          document.querySelectorAll('.faq-item.open').forEach(open => {
-            if (open !== item) open.classList.remove('open');
-          });
-          item.classList.toggle('open');
-        });
-      });
+    analyzeBtn.addEventListener('click', async () => {
+      const file = screenshotInput.files[0];
+      if (!file) { alert('Пожалуйста, сначала выберите скриншот'); return; }
+      resultArea.style.display = 'block';
+      resultArea.innerHTML = '<span class="loader"></span> Распознаю текст (русский, английский, китайский)...';
+      analyzeBtn.disabled = true;
+      try {
+        // Инициализация Tesseract с поддержкой китайского (упрощённый) + русский + английский
+        const worker = await Tesseract.createWorker('rus+eng+chi_sim');
+        const { data: { text: recognizedText } } = await worker.recognize(file);
+        await worker.terminate();
 
-      // ========================
-      // АНАЛИЗ ФОТО ЧЕРЕЗ TESSERACT.JS
-      // ========================
-      const screenshotInput = document.getElementById('screenshotInput');
-      const previewImg = document.getElementById('previewImage');
-      const customQuestion = document.getElementById('customQuestion');
-      const analyzeBtn = document.getElementById('analyzeBtn');
-      const resultArea = document.getElementById('resultArea');
-
-      // Показываем предпросмотр при выборе файла
-      screenshotInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            previewImg.style.display = 'block';
-          };
-          reader.readAsDataURL(file);
-          resultArea.style.display = 'none';
-        } else {
-          previewImg.style.display = 'none';
-        }
-      });
-
-      // Функция анализа через Tesseract
-      analyzeBtn.addEventListener('click', async () => {
-        const file = screenshotInput.files[0];
-        if (!file) {
-          alert('Пожалуйста, сначала выберите скриншот');
+        if (!recognizedText || recognizedText.trim().length === 0) {
+          resultArea.innerHTML = '⚠️ Не удалось распознать текст на изображении. Возможно, фото слишком тёмное или размытое.';
+          analyzeBtn.disabled = false;
           return;
         }
-
-        resultArea.style.display = 'block';
-        resultArea.innerHTML = '<span class="loader"></span> Распознаю текст на фото...';
-        analyzeBtn.disabled = true;
-
-        try {
-          // 1. Распознаем текст с изображения
-          const worker = await Tesseract.createWorker('rus+eng'); // используем русский + английский
-          const { data: { text: recognizedText } } = await worker.recognize(file);
-          await worker.terminate();
-
-          if (!recognizedText || recognizedText.trim().length === 0) {
-            resultArea.innerHTML = '⚠️ Не удалось распознать текст на изображении. Возможно, фото слишком темное или размытое.';
-            analyzeBtn.disabled = false;
-            return;
-          }
-
-          // 2. Логика проверки адреса на основе распознанного текста
-          const lowerText = recognizedText.toLowerCase();
-          let verdict = '';
-          if (lowerText.includes('低调nord') || lowerText.includes('8787库房')) {
-            verdict = '✅ Адрес, похоже, корректен!';
-          } else if (lowerText.includes('浙江省') && lowerText.includes('义乌市')) {
-            verdict = '⚠️ Часть адреса верна, но отсутствуют ключевые слова "低调NORD" или "8787库房". Проверьте внимательно.';
-          } else {
-            verdict = '❌ Адрес не распознан или не соответствует нашему. Пожалуйста, проверьте скриншот.';
-          }
-
-          // 3. Формируем итоговый ответ
-          let finalResponse = `📝 Распознанный текст: "${recognizedText}"\n\n${verdict}`;
-          if (customQuestion.value.trim()) {
-            finalResponse += `\n\n💬 Ответ на ваш вопрос: Вы спрашивали: "${customQuestion.value}". На основе распознанного текста: ${verdict === '✅ Адрес, похоже, корректен!' ? 'Всё в порядке.' : 'Пожалуйста, уточните адрес.'}`;
-          }
-
-          resultArea.innerHTML = finalResponse;
-        } catch (error) {
-          console.error(error);
-          resultArea.innerHTML = '❌ Произошла ошибка при анализе фото. Попробуйте другой снимок или повторите позже.';
-        } finally {
-          analyzeBtn.disabled = false;
+        const lowerText = recognizedText.toLowerCase();
+        let verdict = '';
+        if (lowerText.includes('低调nord') || lowerText.includes('8787库房')) {
+          verdict = '✅ Адрес, похоже, корректен!';
+        } else if (lowerText.includes('浙江省') && lowerText.includes('义乌市')) {
+          verdict = '⚠️ Часть адреса верна, но отсутствуют ключевые слова "低调NORD" или "8787库房". Проверьте внимательно.';
+        } else {
+          verdict = '❌ Адрес не распознан или не соответствует нашему. Пожалуйста, проверьте скриншот.';
         }
-      });
-
-      // Для удобства: клик по лейблу открывает выбор файла
-      document.querySelector('.file-label').addEventListener('click', () => {
-        screenshotInput.click();
-      });
-
-      console.log('TimCargo — сайт готов. Блок проверки адреса через Tesseract.js работает.');
-    })();
-  </script>
+        let finalResponse = `📝 Распознанный текст:\n${recognizedText}\n\n${verdict}`;
+        if (customQuestion.value.trim()) finalResponse += `\n\n💬 Ответ на ваш вопрос: Вы спрашивали: "${customQuestion.value}". На основе распознанного текста: ${verdict === '✅ Адрес, похоже, корректен!' ? 'Всё в порядке.' : 'Пожалуйста, уточните адрес.'}`;
+        resultArea.innerHTML = finalResponse;
+      } catch (error) {
+        console.error(error);
+        resultArea.innerHTML = '❌ Произошла ошибка при анализе фото. Попробуйте другой снимок или повторите позже.';
+      } finally { analyzeBtn.disabled = false; }
+    });
+    document.querySelector('.file-label').addEventListener('click', () => { screenshotInput.click(); });
+  })();
+</script>
 </body>
 </html>
