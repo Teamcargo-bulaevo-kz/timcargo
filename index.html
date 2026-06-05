@@ -6,31 +6,24 @@
   <title>TimCargo | Проверка адреса Pinduoduo</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
-    :root {
-      --bg: #0a0a0a;
-      --card: #1a1a1a;
-      --red: #e8112d;
-      --text: #f0f0f0;
-      --border: #2a2a2a;
-    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: #0a0a0a;
+      color: #f0f0f0;
       font-family: system-ui, sans-serif;
       padding: 20px;
     }
     .container { max-width: 700px; margin: 0 auto; }
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
       border-radius: 24px;
       padding: 20px;
       margin-bottom: 20px;
     }
     .btn {
       display: inline-block;
-      background: var(--red);
+      background: #e8112d;
       color: white;
       border: none;
       padding: 10px 20px;
@@ -40,7 +33,7 @@
     }
     .btn-outline {
       background: transparent;
-      border: 1px solid var(--border);
+      border: 1px solid #2a2a2a;
     }
     .preview {
       max-width: 100%;
@@ -71,7 +64,7 @@
     textarea {
       width: 100%;
       background: #111;
-      border: 1px solid var(--border);
+      border: 1px solid #2a2a2a;
       border-radius: 20px;
       padding: 10px;
       color: white;
@@ -102,17 +95,14 @@
 
 <script>
   (function() {
-    // --- Элементы ---
     const screenshotInput = document.getElementById('screenshot');
     const previewImg = document.getElementById('preview');
     const analyzeBtn = document.getElementById('analyzeBtn');
     const resultDiv = document.getElementById('result');
     const userComment = document.getElementById('userComment');
 
-    // --- ВАШ URL рабочего ИИ-воркера ---
     const AI_WORKER_URL = 'https://ai.lazyshadow777.workers.dev/';
 
-    // Предпросмотр фото
     screenshotInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -128,7 +118,6 @@
       }
     });
 
-    // Отправка на ИИ
     analyzeBtn.addEventListener('click', async () => {
       const file = screenshotInput.files[0];
       if (!file) {
@@ -141,7 +130,6 @@
       analyzeBtn.disabled = true;
 
       try {
-        // 1. Распознаём текст через Tesseract
         const worker = await Tesseract.createWorker('rus+eng+chi_sim');
         const { data: { text } } = await worker.recognize(file);
         await worker.terminate();
@@ -152,7 +140,6 @@
           return;
         }
 
-        // 2. Формируем промпт для ИИ
         const prompt = `Ты — эксперт по проверке адресов доставки из Pinduoduo. Проанализируй распознанный текст со скриншота.
 
 Распознанный текст:
@@ -165,28 +152,24 @@
 - Найти персональный код (формат "XXXX 22", где XXXX — четыре цифры).
 - Проверить, что адрес соответствует шаблону (наличие всех частей).
 
-Ответ дай на русском языке, структурированно, примерно так:
-📞 Телефон: (найден/не найден, какой)
-👤 Имя пользователя: (какое)
-📍 Адрес: (что найдено, чего не хватает)
-🔑 Персональный код: (найден/не найден, какой)
+Ответ дай на русском языке, структурированно:
+📞 Телефон: ...
+👤 Имя пользователя: ...
+📍 Адрес: ...
+🔑 Персональный код: ...
 ---
-✅ ИТОГ: адрес корректен / не корректен (и почему)
+✅ ИТОГ: адрес корректен / не корректен (и почему)`;
 
-Не добавляй лишних рассуждений, только факты.`;
-
-        // 3. Отправляем запрос к вашему воркеру
         const aiResp = await fetch(AI_WORKER_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: prompt, history: [] })
         });
 
-        if (!aiResp.ok) throw new Error(`Ошибка ИИ: ${aiResp.status}`);
+        if (!aiResp.ok) throw new Error(`HTTP ${aiResp.status}`);
         const aiData = await aiResp.json();
         let analysis = aiData.response || 'Нет ответа от ИИ';
 
-        // Добавляем комментарий пользователя, если есть
         if (userComment.value.trim()) {
           analysis += `\n\n💬 Ваш комментарий: ${userComment.value}`;
         }
@@ -194,7 +177,7 @@
         resultDiv.innerHTML = analysis;
       } catch (err) {
         console.error(err);
-        resultDiv.innerHTML = `❌ Ошибка: ${err.message}. Проверьте, что ваш ИИ-воркер доступен по адресу ${AI_WORKER_URL}`;
+        resultDiv.innerHTML = `❌ Ошибка: ${err.message}. Возможно, проблема с CORS. Воркер должен разрешать запросы с других доменов.`;
       } finally {
         analyzeBtn.disabled = false;
       }
