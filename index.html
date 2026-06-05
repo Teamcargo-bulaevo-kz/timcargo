@@ -3,86 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>TimCargo Булаево | Карго-доставка из Китая</title>
+  <title>TimCargo Булаево | Проверка адреса</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
-    /* Стили (сокращённо, но все важные классы сохранены) */
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #141414;
       --bg-card: #1a1a1a;
       --red-accent: #e8112d;
-      --red-glow: #ff3b4a;
       --text-primary: #f0f0f0;
       --text-secondary: #a0a0a0;
       --border-color: #2a2a2a;
-      --font-main: 'Inter', system-ui, sans-serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: var(--bg-primary);
       color: var(--text-primary);
-      font-family: var(--font-main);
-      line-height: 1.5;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       padding: 20px;
+      line-height: 1.5;
     }
-    .container { max-width: 1200px; margin: 0 auto; }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: 50px;
-      background: var(--red-accent);
-      color: white;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-outline { background: transparent; border: 1px solid var(--border-color); }
-    .check-card {
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .card {
       background: var(--bg-card);
       border-radius: 20px;
       padding: 20px;
       margin: 20px 0;
       border: 1px solid var(--border-color);
     }
-    .preview-img { max-width: 100%; max-height: 200px; margin-top: 10px; border-radius: 12px; display: none; }
-    .result-box { background: var(--bg-secondary); padding: 15px; border-radius: 12px; margin-top: 15px; white-space: pre-wrap; }
-    .loader { display: inline-block; width: 20px; height: 20px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-right: 8px; }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 40px;
+      background: var(--red-accent);
+      color: white;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+    }
+    .preview-img {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 10px;
+      border-radius: 12px;
+      display: none;
+    }
+    .result-box {
+      background: var(--bg-secondary);
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+    }
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .error { color: #ff8a80; }
     .success { color: #8bc34a; }
+    .error { color: #ff8a80; }
+    textarea, input {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 10px;
+      color: white;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <h1>📦 TimCargo Булаево</h1>
-  <p>Карго доставка из Китая</p>
+  <p>Проверка адреса доставки из Pinduoduo</p>
 
-  <!-- Блок для личного кода -->
-  <div class="check-card" id="codeBlock">
-    <h3>🔑 Ваш личный код для адреса</h3>
-    <div id="userCodeDisplay" style="font-size: 2rem; font-weight: bold; background: #2a2a36; padding: 10px; border-radius: 20px; text-align: center; margin: 10px 0;">—</div>
-    <button id="refreshCodeBtn" class="btn btn-outline">🔄 Получить новый код</button>
-    <div style="margin-top: 15px;">
-      <input type="text" id="codeToCheck" placeholder="Введите ваш код (например, 1801 22)" style="width: 100%; padding: 10px; border-radius: 30px; background: var(--bg-secondary); border: 1px solid var(--border-color); color: white;">
-      <button id="verifyCodeBtn" class="btn" style="margin-top: 10px;">✅ Проверить код</button>
-      <div id="verifyResult" style="margin-top: 10px;"></div>
-    </div>
-  </div>
-
-  <!-- Блок анализа скриншота -->
-  <div class="check-card">
-    <h3>📸 Проверка адреса по скриншоту</h3>
-    <label for="screenshotInput" class="btn btn-outline" style="display: inline-block; margin-bottom: 10px;">📂 Выбрать скриншот</label>
+  <div class="card">
+    <h3>📸 Проверка скриншота</h3>
+    <label for="screenshotInput" class="btn btn-outline" style="display: inline-block;">📂 Выбрать скриншот</label>
     <input type="file" id="screenshotInput" accept="image/*" style="display: none;">
     <img id="previewImage" class="preview-img" alt="Предпросмотр">
-    <textarea id="customQuestion" rows="2" placeholder="(Необязательно) Ваш вопрос о фото" style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 20px; padding: 10px; color: white; margin-top: 10px;"></textarea>
-    <button id="analyzeBtn" class="btn" style="margin-top: 10px;">🔍 Проверить адрес</button>
+    <textarea id="customQuestion" rows="2" placeholder="(Необязательно) Ваш комментарий"></textarea>
+    <button id="analyzeBtn" class="btn">🔍 Проверить адрес</button>
     <div id="resultArea" class="result-box" style="display: none;"></div>
   </div>
 
-  <!-- Кнопки связи и прочее (оставьте свои) -->
   <div style="margin-top: 20px;">
     <a href="https://wa.me/77773363666" class="btn">WhatsApp</a>
     <a href="tel:+77773363666" class="btn btn-outline">Позвонить</a>
@@ -91,87 +110,21 @@
 
 <script>
   (function() {
-    // --- Конфигурация воркера для кодов ---
-    const CODE_WORKER_URL = 'https://code-generator.lazyshadow777.workers.dev';
-    
-    // Элементы
-    const userCodeDisplay = document.getElementById('userCodeDisplay');
-    const refreshBtn = document.getElementById('refreshCodeBtn');
-    const codeInput = document.getElementById('codeToCheck');
-    const verifyBtn = document.getElementById('verifyCodeBtn');
-    const verifyResult = document.getElementById('verifyResult');
     const screenshotInput = document.getElementById('screenshotInput');
     const previewImg = document.getElementById('previewImage');
     const analyzeBtn = document.getElementById('analyzeBtn');
     const resultArea = document.getElementById('resultArea');
     const customQuestion = document.getElementById('customQuestion');
 
-    // --- Функции работы с кодом ---
-    async function loadUserCode() {
-      try {
-        const resp = await fetch(`${CODE_WORKER_URL}/api/get-code`);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        if (data.code) {
-          userCodeDisplay.innerText = data.code;
-          userCodeDisplay.style.color = '#fff';
-        } else {
-          userCodeDisplay.innerText = 'Ошибка получения';
-          userCodeDisplay.classList.add('error');
-        }
-      } catch (err) {
-        console.error(err);
-        userCodeDisplay.innerText = '⚠️ Недоступно (воркер не отвечает)';
-        userCodeDisplay.classList.add('error');
-      }
-    }
-    async function refreshCode() {
-      try {
-        const resp = await fetch(`${CODE_WORKER_URL}/api/refresh-code`);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        if (data.code) {
-          userCodeDisplay.innerText = data.code;
-          verifyResult.innerHTML = '';
-        } else {
-          alert('Не удалось обновить код');
-        }
-      } catch (err) {
-        alert('Ошибка соединения: ' + err.message);
-      }
-    }
-    async function verifyCode() {
-      const inputCode = codeInput.value.trim();
-      if (!inputCode) return;
-      try {
-        const resp = await fetch(`${CODE_WORKER_URL}/api/verify-code`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ codeToCheck: inputCode })
-        });
-        const data = await resp.json();
-        if (data.valid) {
-          verifyResult.innerHTML = '✅ Код верный!';
-          verifyResult.className = 'success';
-        } else {
-          verifyResult.innerHTML = `❌ ${data.reason}`;
-          verifyResult.className = 'error';
-        }
-      } catch (err) {
-        verifyResult.innerHTML = '❌ Ошибка соединения с сервером кодов';
-        verifyResult.className = 'error';
-      }
-    }
-    refreshBtn.addEventListener('click', refreshCode);
-    verifyBtn.addEventListener('click', verifyCode);
-    loadUserCode();
-
-    // --- Анализ скриншота с улучшенным поиском адреса и кода ---
+    // Показ предпросмотра
     screenshotInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (ev) => { previewImg.src = ev.target.result; previewImg.style.display = 'block'; };
+        reader.onload = (ev) => {
+          previewImg.src = ev.target.result;
+          previewImg.style.display = 'block';
+        };
         reader.readAsDataURL(file);
         resultArea.style.display = 'none';
       } else {
@@ -179,82 +132,98 @@
       }
     });
 
+    // Проверка адреса по распознанному тексту
+    function analyzeAddress(fullText) {
+      // Приводим к нижнему регистру для поиска (но некоторые ключи оставим как есть)
+      const lowerText = fullText.toLowerCase();
+      const originalText = fullText;
+
+      // 1. Телефон
+      const phoneRegex = /1\d{10}/; // 11 цифр, начинается с 1 (китайский формат)
+      const hasPhone = phoneRegex.test(originalText);
+      const foundPhone = hasPhone ? originalText.match(phoneRegex)[0] : null;
+
+      // 2. Ключевые фрагменты адреса (оригинальные иероглифы)
+      const addressParts = [
+        '低调NORD',
+        '8787库房',
+        '浙江省',
+        '金华市',
+        '义乌市',
+        '福田街道',
+        '龙岗路一街6号'
+      ];
+      let foundParts = [];
+      for (let part of addressParts) {
+        if (originalText.includes(part)) foundParts.push(part);
+      }
+      const isAddressComplete = foundParts.length >= 5; // достаточно большая часть
+
+      // 3. Код XXXX 22
+      const codeRegex = /\b(\d{4})\s*22\b/;
+      const hasCode = codeRegex.test(originalText);
+      const foundCode = hasCode ? originalText.match(codeRegex)[0] : null;
+
+      // Формируем ответ
+      let result = '';
+      if (hasPhone && isAddressComplete && hasCode) {
+        result = '✅ Адрес корректен!\n';
+      } else {
+        result = '❌ Адрес НЕ корректен. Проблемы:\n';
+        if (!hasPhone) result += '   - Не найден номер телефона (должен быть 18957788787)\n';
+        if (!isAddressComplete) result += `   - Не все части адреса найдены (найдено ${foundParts.length} из 7)\n`;
+        if (!hasCode) result += '   - Отсутствует личный код (формат XXXX 22)\n';
+      }
+
+      // Детали
+      if (hasPhone) result += `\n📞 Телефон: ${foundPhone}`;
+      if (foundParts.length > 0) result += `\n📍 Найдены фрагменты адреса: ${foundParts.join(', ')}`;
+      if (foundCode) result += `\n🔑 Личный код: ${foundCode}`;
+
+      // Распознанный текст полностью (для отладки)
+      result += `\n\n--- Распознанный текст (первые 500 символов) ---\n${fullText.substring(0, 500)}${fullText.length > 500 ? '…' : ''}`;
+
+      return result;
+    }
+
+    // Обработка клика
     analyzeBtn.addEventListener('click', async () => {
       const file = screenshotInput.files[0];
-      if (!file) { alert('Выберите скриншот'); return; }
+      if (!file) {
+        alert('Сначала выберите скриншот');
+        return;
+      }
+
       resultArea.style.display = 'block';
       resultArea.innerHTML = '<span class="loader"></span> Распознаю текст (русский, английский, китайский)...';
       analyzeBtn.disabled = true;
+
       try {
         const worker = await Tesseract.createWorker('rus+eng+chi_sim');
-        const { data: { text: fullText } } = await worker.recognize(file);
+        const { data: { text } } = await worker.recognize(file);
         await worker.terminate();
-        if (!fullText || fullText.trim().length === 0) {
+
+        if (!text || text.trim().length === 0) {
           resultArea.innerHTML = '⚠️ Не удалось распознать текст. Попробуйте более чёткое фото.';
           analyzeBtn.disabled = false;
           return;
         }
-        // Разбиваем на строки и ищем нужные фрагменты
-        const lines = fullText.split(/\r?\n/);
-        let addressFound = false;
-        let extractedCode = null;
-        // Ключевые части адреса
-        const addressKeywords = ['低调NORD', '8787库房', '浙江省 金华市 义乌市', '福田街道 龙岗路一街6号'];
-        let matchedLines = [];
-        for (let line of lines) {
-          line = line.trim();
-          if (!line) continue;
-          for (let kw of addressKeywords) {
-            if (line.includes(kw)) {
-              matchedLines.push(line);
-              addressFound = true;
-              break;
-            }
-          }
-          // Ищем код формата XXXX 22 (4 цифры, пробел, 22)
-          const codeMatch = line.match(/\b(\d{4})\s*22\b/);
-          if (codeMatch) extractedCode = codeMatch[0];
-        }
-        // Формируем ответ
-        let final = `📝 Распознанные строки адреса:\n${matchedLines.join('\n') || 'Не найдены'}\n\n`;
-        if (addressFound) {
-          final += '✅ Адрес корректен (основные элементы присутствуют).\n';
-        } else {
-          final += '❌ Адрес не распознан. Убедитесь, что на скриншоте видна вся информация.\n';
-        }
-        // Проверка кода, если найден
-        if (extractedCode) {
-          final += `\n🔍 Найден код в адресе: "${extractedCode}". `;
-          // Попробуем сверить с личным кодом (если доступен)
-          try {
-            const userCodeResp = await fetch(`${CODE_WORKER_URL}/api/get-code`);
-            const userCodeData = await userCodeResp.json();
-            if (userCodeData.code) {
-              if (extractedCode === userCodeData.code) {
-                final += '✅ Код совпадает с вашим личным кодом.';
-              } else {
-                final += `❌ Код НЕ совпадает! Ваш личный код: ${userCodeData.code}. Пожалуйста, используйте его.`;
-              }
-            } else {
-              final += '⚠️ Не удалось получить ваш личный код для проверки.';
-            }
-          } catch (e) {
-            final += '⚠️ Ошибка проверки кода на сервере.';
-          }
-        } else {
-          final += '\n⚠️ В адресе не найден личный код (формат XXXX 22). Укажите его вручную.';
-        }
+
+        const analysis = analyzeAddress(text);
+        let final = analysis;
         if (customQuestion.value.trim()) {
-          final += `\n\n💬 Ответ на ваш вопрос: ${customQuestion.value}`;
+          final += `\n\n💬 Ваш вопрос: ${customQuestion.value}\n(Ответ: на основе анализа адреса выше)`;
         }
         resultArea.innerHTML = final;
       } catch (err) {
         console.error(err);
-        resultArea.innerHTML = '❌ Ошибка при анализе. Попробуйте другой снимок.';
+        resultArea.innerHTML = '❌ Ошибка при анализе. Попробуйте другой скриншот.';
       } finally {
         analyzeBtn.disabled = false;
       }
     });
+
+    // Клик по лейблу для выбора файла
     document.querySelector('label[for="screenshotInput"]').addEventListener('click', () => screenshotInput.click());
   })();
 </script>
