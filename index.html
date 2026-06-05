@@ -2,118 +2,233 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>TimCargo | Проверка адреса</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
-    body { background: #0a0a0a; color: #fff; font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
-    .card { background: #1a1a1a; border-radius: 20px; padding: 20px; margin-bottom: 20px; }
-    .btn { background: #e8112d; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; }
-    .btn-outline { background: transparent; border: 1px solid #333; }
-    .code-block { font-size: 2rem; background: #2a2a36; padding: 12px; border-radius: 20px; text-align: center; margin: 10px 0; }
-    .preview { max-width: 100%; max-height: 200px; margin-top: 10px; border-radius: 16px; display: none; }
-    .result { background: #111; padding: 15px; border-radius: 16px; margin-top: 15px; white-space: pre-wrap; }
-    .loader { display: inline-block; width: 20px; height: 20px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-right: 8px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #f0f0f0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      line-height: 1.4;
+    }
+    .container { max-width: 700px; margin: 0 auto; }
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: inline-block;
+      background: #e8112d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #3a3a3a;
+    }
+    .btn-outline:hover { border-color: #e8112d; background: rgba(232,17,45,0.1); }
+    .code-block {
+      font-size: 2rem;
+      font-weight: bold;
+      background: #2a2a36;
+      padding: 12px;
+      border-radius: 20px;
+      text-align: center;
+      margin: 10px 0;
+      letter-spacing: 2px;
+    }
+    .preview {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 10px;
+      border-radius: 16px;
+      display: none;
+    }
+    .result {
+      background: #111;
+      padding: 15px;
+      border-radius: 16px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+    }
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .flex { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
+    .flex { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+    .note { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 10px; }
+    h1 { font-size: 1.8rem; margin-bottom: 5px; }
   </style>
 </head>
 <body>
-<h1>📦 TimCargo Булаево</h1>
-<div class="card">
-  <h3>🔑 Ваш уникальный код</h3>
-  <div id="code" class="code-block">—</div>
-  <div class="flex">
-    <button id="refreshBtn" class="btn btn-outline">Новый код</button>
-    <button id="copyBtn" class="btn btn-outline">Копировать</button>
-  </div>
-  <p style="font-size:0.8rem;">Код (XXXX 22) нужно указывать в конце адреса.</p>
-</div>
+<div class="container">
+  <h1>📦 TimCargo Булаево</h1>
+  <p>Карго‑доставка из Китая | Проверка адреса</p>
 
-<div class="card">
-  <h3>📸 Проверка скриншота</h3>
-  <label for="file" class="btn btn-outline">📂 Выбрать фото</label>
-  <input type="file" id="file" accept="image/*" style="display:none;">
-  <img id="preview" class="preview">
-  <button id="analyzeBtn" class="btn" style="margin-top:15px;">🔍 Проверить адрес</button>
-  <div id="result" class="result" style="display:none;"></div>
+  <div class="card">
+    <h3>🔑 Ваш уникальный код</h3>
+    <div id="userCode" class="code-block">—</div>
+    <div class="flex">
+      <button id="refreshCodeBtn" class="btn-outline btn">🔄 Новый код</button>
+      <button id="copyCodeBtn" class="btn-outline btn">📋 Копировать</button>
+    </div>
+    <div class="note">Код (XXXX 22) нужно указывать в конце адреса. Каждому клиенту выдается уникальный код.</div>
+  </div>
+
+  <div class="card">
+    <h3>📸 Проверка скриншота</h3>
+    <label for="screenshot" class="btn-outline btn" style="display: inline-block;">📂 Выбрать фото</label>
+    <input type="file" id="screenshot" accept="image/*" style="display: none;">
+    <img id="preview" class="preview" alt="Предпросмотр">
+    <button id="analyzeBtn" class="btn" style="margin-top: 15px;">🔍 Проверить адрес</button>
+    <div id="result" class="result" style="display: none;"></div>
+  </div>
+
+  <div class="flex">
+    <a href="https://wa.me/77773363666" class="btn">WhatsApp</a>
+    <a href="tel:+77773363666" class="btn-outline btn">Позвонить</a>
+  </div>
 </div>
 
 <script>
-  const WORKER = 'https://ai.lazyshadow777.workers.dev';
-  const codeSpan = document.getElementById('code');
-  const refreshBtn = document.getElementById('refreshBtn');
-  const copyBtn = document.getElementById('copyBtn');
-  const fileInput = document.getElementById('file');
-  const preview = document.getElementById('preview');
-  const analyzeBtn = document.getElementById('analyzeBtn');
-  const resultDiv = document.getElementById('result');
+  (function() {
+    // Элементы
+    const codeSpan = document.getElementById('userCode');
+    const refreshBtn = document.getElementById('refreshCodeBtn');
+    const copyBtn = document.getElementById('copyCodeBtn');
+    const fileInput = document.getElementById('screenshot');
+    const preview = document.getElementById('preview');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultDiv = document.getElementById('result');
 
-  async function loadCode() {
-    try {
-      const res = await fetch(`${WORKER}/api/get-code`);
-      const data = await res.json();
-      codeSpan.innerText = data.code || 'Ошибка';
-    } catch(e) { codeSpan.innerText = '⚠️ Недоступно'; }
-  }
-  async function refreshCode() {
-    try {
-      const res = await fetch(`${WORKER}/api/refresh-code`);
-      const data = await res.json();
-      codeSpan.innerText = data.code;
-    } catch(e) { alert('Ошибка обновления'); }
-  }
-  function copyCode() {
-    const txt = codeSpan.innerText;
-    if (txt && txt !== '—' && txt !== '⚠️ Недоступно') {
-      navigator.clipboard.writeText(txt).then(() => alert('Код скопирован'));
-    }
-  }
-  refreshBtn.onclick = refreshCode;
-  copyBtn.onclick = copyCode;
-  loadCode();
+    // URL вашего воркера (он же хост сайта, если страница развёрнута на нём, то пустая строка)
+    const WORKER = '';  // оставляем пустым, так как страница и воркер — одно и то же (если используете Pages, замените на полный адрес воркера)
 
-  fileInput.onchange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => { preview.src = ev.target.result; preview.style.display = 'block'; };
-      reader.readAsDataURL(file);
-      resultDiv.style.display = 'none';
+    // ---- Код ----
+    async function loadCode() {
+      try {
+        const res = await fetch('/api/get-code');
+        const data = await res.json();
+        codeSpan.innerText = data.code || 'Ошибка';
+      } catch (e) {
+        codeSpan.innerText = '⚠️ Недоступно';
+        console.error(e);
+      }
     }
-  };
-  document.querySelector('label[for="file"]').onclick = () => fileInput.click();
+    async function refreshCode() {
+      try {
+        const res = await fetch('/api/refresh-code');
+        const data = await res.json();
+        codeSpan.innerText = data.code;
+      } catch (e) {
+        alert('Не удалось обновить код');
+      }
+    }
+    function copyCode() {
+      const text = codeSpan.innerText;
+      if (text && text !== '—' && text !== '⚠️ Недоступно') {
+        navigator.clipboard.writeText(text).then(() => alert('Код скопирован: ' + text));
+      }
+    }
+    refreshBtn.addEventListener('click', refreshCode);
+    copyBtn.addEventListener('click', copyCode);
+    loadCode();
 
-  analyzeBtn.onclick = async () => {
-    const file = fileInput.files[0];
-    if (!file) { alert('Выберите фото'); return; }
-    resultDiv.style.display = 'block';
-    resultDiv.innerHTML = '<span class="loader"></span> Распознаю...';
-    analyzeBtn.disabled = true;
-    try {
-      const worker = await Tesseract.createWorker('rus+eng+chi_sim');
-      const { data: { text } } = await worker.recognize(file);
-      await worker.terminate();
-      if (!text) throw new Error('Текст не распознан');
-      const userCode = codeSpan.innerText;
-      const prompt = `Ты эксперт по адресам Pinduoduo. Эталон: 浙江省 金华市 义乌市 福田街道 龙岗路一街6号 8787库房
-Распознано: """${text}"""
-Проверь, есть ли все элементы эталона. Игнорируй имена, телефоны, лишние слова.
-Также проверь, есть ли личный код пользователя: ${userCode}. Если нет или другой – укажи.
-Ответ: [ВЕРДИКТ] — ✅/❌ , [КОД] — ✅/❌/⚠️. Затем кратко. Если адрес верный, добавь: "✅ Не забудьте поставить галочку". Если нет: "❌ Посмотрите видео и скопируйте адрес с сайта".`;
-      const aiRes = await fetch(WORKER, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: prompt, history: [] })
-      });
-      const aiData = await aiRes.json();
-      resultDiv.innerHTML = aiData.response || 'Нет ответа';
-    } catch (err) {
-      resultDiv.innerHTML = '❌ Ошибка: ' + err.message;
-    } finally {
-      analyzeBtn.disabled = false;
-    }
-  };
+    // ---- Фото ----
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          preview.src = ev.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        resultDiv.style.display = 'none';
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+    document.querySelector('label[for="screenshot"]').addEventListener('click', () => fileInput.click());
+
+    // ---- Анализ ----
+    analyzeBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Сначала выберите скриншот');
+        return;
+      }
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = '<span class="loader"></span> Распознаю текст...';
+      analyzeBtn.disabled = true;
+
+      try {
+        const worker = await Tesseract.createWorker('rus+eng+chi_sim');
+        const { data: { text } } = await worker.recognize(file);
+        await worker.terminate();
+
+        if (!text || text.trim().length === 0) {
+          resultDiv.innerHTML = '⚠️ Не удалось распознать текст. Попробуйте более чёткое фото.';
+          return;
+        }
+
+        const userCode = codeSpan.innerText;
+        const prompt = `Ты — эксперт по проверке адресов Pinduoduo.
+
+Эталон адреса:
+浙江省 金华市 义乌市 福田街道 龙岗路一街6号 8787库房
+
+Распознанный текст со скриншота:
+"""${text}"""
+
+Проверь, содержит ли распознанный текст все элементы эталона. Игнорируй имена, номера телефонов, служебные слова.
+Также проверь, присутствует ли в тексте личный код пользователя: ${userCode} (формат "XXXX 22").
+
+Ответ дай в формате:
+[ВЕРДИКТ] — ✅ Адрес верный (если все элементы на месте) или ❌ Адрес неверный (укажи, чего не хватает)
+[КОД] — ✅ Код совпадает / ❌ Код не найден / ⚠️ Код другой
+
+Затем краткая фраза:
+- если адрес верный: "✅ Не забудьте поставить галочку, выбрав этот адрес."
+- если адрес неверный: "❌ Посмотрите видеоинструкцию и скопируйте адрес с сайта."
+
+Без лишних рассуждений.`;
+
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: prompt, history: [] })
+        });
+        const data = await response.json();
+        const analysis = data.response || 'Нет ответа от ИИ';
+        resultDiv.innerHTML = analysis;
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = '❌ Ошибка при анализе. Проверьте соединение или попробуйте другой снимок.';
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    });
+  })();
 </script>
 </body>
 </html>
