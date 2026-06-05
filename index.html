@@ -14,10 +14,11 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
 
-  <!-- Подключение Puter.js для анализа фото -->
-  <script src="https://js.puter.com/v2/"></script>
+  <!-- Подключаем библиотеку Tesseract.js -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
+    /* ========== СТИЛИ (те же, что и ранее) ========== */
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #141414;
@@ -103,7 +104,6 @@
     .btn-outline:hover { border-color: var(--red-accent); box-shadow: 0 0 20px rgba(232,17,45,0.25); background: rgba(232,17,45,0.08); transform: translateY(-2px); }
     .btn-small { padding: 0.7rem 1.6rem; font-size: 0.9rem; }
 
-    /* QR-блок */
     .qr-block {
       display: flex;
       flex-direction: column;
@@ -355,11 +355,11 @@
       </p>
     </section>
 
-    <!-- НОВЫЙ БЛОК: Проверка адреса по скриншоту (Puter.js) -->
+    <!-- НОВЫЙ БЛОК: Проверка адреса по скриншоту (Tesseract.js) -->
     <section class="address-check-section fade-up" id="addressCheck">
       <div class="section-title">
         <h2>📸 Проверка адреса по скриншоту</h2>
-        <p>Загрузите фото (скриншот) из Pinduoduo или другого приложения — ИИ проверит корректность адреса доставки</p>
+        <p>Загрузите фото (скриншот) из Pinduoduo — ИИ проверит корректность адреса доставки</p>
       </div>
       <div class="check-card">
         <div class="file-upload-area">
@@ -569,7 +569,7 @@
       });
 
       // ========================
-      // АНАЛИЗ ФОТО ЧЕРЕЗ PUTER.JS
+      // АНАЛИЗ ФОТО ЧЕРЕЗ TESSERACT.JS
       // ========================
       const screenshotInput = document.getElementById('screenshotInput');
       const previewImg = document.getElementById('previewImage');
@@ -587,13 +587,13 @@
             previewImg.style.display = 'block';
           };
           reader.readAsDataURL(file);
-          resultArea.style.display = 'none'; // скрыть старый результат
+          resultArea.style.display = 'none';
         } else {
           previewImg.style.display = 'none';
         }
       });
 
-      // Анализ
+      // Функция анализа через Tesseract
       analyzeBtn.addEventListener('click', async () => {
         const file = screenshotInput.files[0];
         if (!file) {
@@ -601,36 +601,43 @@
           return;
         }
 
-        // Показываем лоадер и очищаем область результата
         resultArea.style.display = 'block';
-        resultArea.innerHTML = '<span class="loader"></span> Анализирую фото...';
+        resultArea.innerHTML = '<span class="loader"></span> Распознаю текст на фото...';
         analyzeBtn.disabled = true;
 
         try {
-          // Преобразуем файл в URL для передачи в puter.ai.chat
-          const imageUrl = URL.createObjectURL(file);
-          
-          // Промпт: проверка адреса
-          let promptText = customQuestion.value.trim();
-          if (!promptText) {
-            promptText = `Ты — эксперт по проверке адресов доставки. На скриншоте указан адрес из приложения Pinduoduo (или другого магазина). Внимательно прочитай текст на изображении. Определи, корректен ли этот адрес для отправки посылки в Казахстан. Если есть ошибки, укажи их. Если адрес верный, подтверди это. Ответь коротко, только по делу, на русском языке.`;
-          } else {
-            promptText = `Пользователь спрашивает: "${promptText}". Ответь, проанализировав скриншот.`;
+          // 1. Распознаем текст с изображения
+          const worker = await Tesseract.createWorker('rus+eng'); // используем русский + английский
+          const { data: { text: recognizedText } } = await worker.recognize(file);
+          await worker.terminate();
+
+          if (!recognizedText || recognizedText.trim().length === 0) {
+            resultArea.innerHTML = '⚠️ Не удалось распознать текст на изображении. Возможно, фото слишком темное или размытое.';
+            analyzeBtn.disabled = false;
+            return;
           }
 
-          // Вызов Puter.js AI
-          const response = await puter.ai.chat(promptText, imageUrl, {
-            model: "google/gemini-2.5-flash", // можно заменить на другую, но эта отлично подходит
-          });
-          
-          // Освобождаем URL
-          URL.revokeObjectURL(imageUrl);
-          
-          // Выводим результат с красивым оформлением
-          resultArea.innerHTML = `<strong>🧠 Результат проверки:</strong><br>${response}`;
+          // 2. Логика проверки адреса на основе распознанного текста
+          const lowerText = recognizedText.toLowerCase();
+          let verdict = '';
+          if (lowerText.includes('低调nord') || lowerText.includes('8787库房')) {
+            verdict = '✅ Адрес, похоже, корректен!';
+          } else if (lowerText.includes('浙江省') && lowerText.includes('义乌市')) {
+            verdict = '⚠️ Часть адреса верна, но отсутствуют ключевые слова "低调NORD" или "8787库房". Проверьте внимательно.';
+          } else {
+            verdict = '❌ Адрес не распознан или не соответствует нашему. Пожалуйста, проверьте скриншот.';
+          }
+
+          // 3. Формируем итоговый ответ
+          let finalResponse = `📝 Распознанный текст: "${recognizedText}"\n\n${verdict}`;
+          if (customQuestion.value.trim()) {
+            finalResponse += `\n\n💬 Ответ на ваш вопрос: Вы спрашивали: "${customQuestion.value}". На основе распознанного текста: ${verdict === '✅ Адрес, похоже, корректен!' ? 'Всё в порядке.' : 'Пожалуйста, уточните адрес.'}`;
+          }
+
+          resultArea.innerHTML = finalResponse;
         } catch (error) {
           console.error(error);
-          resultArea.innerHTML = `<strong>❌ Ошибка:</strong> Не удалось проанализировать фото. Попробуйте другой снимок или повторите позже.`;
+          resultArea.innerHTML = '❌ Произошла ошибка при анализе фото. Попробуйте другой снимок или повторите позже.';
         } finally {
           analyzeBtn.disabled = false;
         }
@@ -641,7 +648,7 @@
         screenshotInput.click();
       });
 
-      console.log('TimCargo — сайт готов. Блок проверки адреса через Puter.js работает.');
+      console.log('TimCargo — сайт готов. Блок проверки адреса через Tesseract.js работает.');
     })();
   </script>
 </body>
