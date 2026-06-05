@@ -14,6 +14,9 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
 
+  <!-- Подключение Puter.js для анализа фото -->
+  <script src="https://js.puter.com/v2/"></script>
+
   <style>
     :root {
       --bg-primary: #0a0a0a;
@@ -107,16 +110,15 @@
       align-items: center;
       margin-top: 1rem;
     }
-   .qr-block img {
-  width: 80vw;                /* 80% ширины экрана */
-  max-width: 400px;           /* но не больше 400px на больших экранах */
-  height: auto;               /* сохраняем пропорции */
-  border-radius: 20px;
-  background: white;
-  padding: 12px;
-  box-shadow: 0 0 20px rgba(232, 17, 45, 0.4);
-  cursor: pointer;
-}
+    .qr-block img {
+      width: 80vw;
+      max-width: 400px;
+      height: auto;
+      border-radius: 20px;
+      background: white;
+      padding: 12px;
+      box-shadow: 0 0 20px rgba(232, 17, 45, 0.4);
+      cursor: pointer;
     }
     .qr-block img:hover { transform: scale(1.05); }
     .qr-block span {
@@ -151,6 +153,80 @@
     .gallery-item { background: var(--bg-card); border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 1 / 1; border: 1px solid var(--border-color); transition: var(--transition-smooth); }
     .gallery-item iframe { width: 100%; height: 100%; border: none; }
     .gallery-item:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
+
+    /* Блок проверки адреса */
+    .address-check-section { padding: 2.5rem 0; }
+    .check-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      max-width: 700px;
+      margin: 0 auto;
+      transition: var(--transition-smooth);
+    }
+    .check-card:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
+    .file-upload-area {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .file-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-secondary);
+      border: 1px dashed var(--red-accent);
+      border-radius: 40px;
+      padding: 0.8rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .file-label:hover { background: rgba(232,17,45,0.1); }
+    .preview-img {
+      margin-top: 1rem;
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      display: none;
+    }
+    .question-input {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 0.8rem 1.2rem;
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      margin: 1rem 0;
+      resize: vertical;
+    }
+    .analyze-btn {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    .result-box {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--red-accent);
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+    }
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .tutorials-section { padding: 2.5rem 0; }
     .tutorial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
@@ -219,7 +295,7 @@
       <a href="#contacts" class="btn btn-primary">💬 Связаться</a>
       <button class="btn btn-outline" id="shareBtn">🔗 Поделиться сайтом</button>
     </div>
-    <!-- Блок с QR-кодом (замените изображение на своё) -->
+    <!-- Блок с QR-кодом -->
     <div class="qr-block">
       <img src="qr.jpeg" alt="QR-код сайта" id="qrCodeImg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
       <span style="display:none;">📱 Место для QR-кода</span>
@@ -258,7 +334,7 @@
       </div>
     </section>
 
-    <!-- Галерея (переименована) -->
+    <!-- Галерея -->
     <section class="gallery-section fade-up" id="gallery">
       <div class="section-title">
         <h2>Фото и видео</h2>
@@ -267,7 +343,6 @@
       <div class="gallery-grid">
         <div class="gallery-item"><img src="placeholder1.jpg" alt="Фото" onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>📷 Фото</div>'"></div>
         <div class="gallery-item"><img src="placeholder2.jpg" alt="Склад" onerror="this.outerHTML='<div class=gallery-item style=color:#6b6b6b;display:flex;align-items:center;justify-content:center>🏭 Склад</div>'"></div>
-        <!-- ВИДЕО: замените ID видео (сейчас R9tOwPetH7M) на своё -->
         <div class="gallery-item">
           <iframe src="https://www.youtube.com/embed/R9tOwPetH7M?rel=0&modestbranding=1" 
                   title="Видео выдачи" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -278,6 +353,24 @@
       <p style="text-align:center; margin-top:0.8rem; font-size:0.8rem; color:var(--text-muted);">
         ⚠️ Замените фото и видео на свои.
       </p>
+    </section>
+
+    <!-- НОВЫЙ БЛОК: Проверка адреса по скриншоту (Puter.js) -->
+    <section class="address-check-section fade-up" id="addressCheck">
+      <div class="section-title">
+        <h2>📸 Проверка адреса по скриншоту</h2>
+        <p>Загрузите фото (скриншот) из Pinduoduo или другого приложения — ИИ проверит корректность адреса доставки</p>
+      </div>
+      <div class="check-card">
+        <div class="file-upload-area">
+          <label class="file-label" for="screenshotInput">📂 Выбрать скриншот</label>
+          <input type="file" id="screenshotInput" accept="image/*" style="display:none;">
+          <img id="previewImage" class="preview-img" alt="Предпросмотр">
+        </div>
+        <textarea id="customQuestion" class="question-input" rows="2" placeholder="(Необязательно) Ваш дополнительный вопрос о фото, например: «Что не так с этим адресом?»"></textarea>
+        <button id="analyzeBtn" class="btn btn-primary analyze-btn">🔍 Проверить адрес</button>
+        <div id="resultArea" class="result-box" style="display:none;"></div>
+      </div>
     </section>
 
     <!-- Инструкции -->
@@ -292,7 +385,6 @@
         <div class="tutorial-card">
           <h3>🏠 Адрес для заказов</h3>
           <p>Скопируйте строки ниже и вставьте в адрес доставки приложения Pinduoduo</p>
-          <!-- ВАШЕ ВИДЕО: настройка адреса (замените ID при необходимости) -->
           <iframe src="https://www.youtube.com/embed/R9tOwPetH7M?rel=0&modestbranding=1" 
                   style="width:100%; aspect-ratio:16/9; border-radius:12px; border:none; margin-bottom:1rem;" 
                   title="Видео: настройка адреса" allowfullscreen>
@@ -321,22 +413,20 @@
           </div>
         </div>
 
-        <!-- Привязка карты (пока без видео) -->
+        <!-- Привязка карты -->
         <div class="tutorial-card">
           <h3>💳 Как привязать карту</h3>
           <p>Добавьте карту любого банка РК для быстрой оплаты. Это безопасно.</p>
-          <!-- ЗАМЕНИТЕ src на своё видео, когда будет готово -->
           <div style="background:#111; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; color:var(--text-muted);">
             🎬 Видео скоро появится
           </div>
           <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.4rem;">⚠️ Вставьте ссылку на видео в src</p>
         </div>
 
-        <!-- Отслеживание (видео) -->
+        <!-- Отслеживание -->
         <div class="tutorial-card">
           <h3>🔍 Как отследить посылку</h3>
           <p>Получите трек-номер и проверяйте статус в реальном времени.</p>
-          <!-- ВАШЕ ВИДЕО: отслеживание (Shorts преобразован в embed) -->
           <iframe src="https://www.youtube.com/embed/PRontztzV80?rel=0&modestbranding=1" 
                   style="width:100%; aspect-ratio:16/9; border-radius:12px; border:none;" 
                   title="Видео: отслеживание" allowfullscreen>
@@ -349,7 +439,6 @@
     <section class="contacts-section fade-up" id="contacts">
       <div class="section-title"><h2>Свяжитесь с нами</h2></div>
       <div class="contact-buttons">
-        <!-- ВАЖНО: проверьте номер WhatsApp (сейчас 77773363666). Для Казахстана должен быть 7xxxxxxxxxx без плюса -->
         <a href="https://wa.me/77773363666" target="_blank" class="btn btn-primary">💬 WhatsApp</a>
         <a href="https://t.me/TimCargoBot" target="_blank" class="btn btn-outline">✈️ Telegram</a>
         <a href="tel:+77773363666" class="btn btn-outline">📞 Позвонить</a>
@@ -479,7 +568,80 @@
         });
       });
 
-      console.log('TimCargo — сайт готов. Видео работают, QR-код добавлен.');
+      // ========================
+      // АНАЛИЗ ФОТО ЧЕРЕЗ PUTER.JS
+      // ========================
+      const screenshotInput = document.getElementById('screenshotInput');
+      const previewImg = document.getElementById('previewImage');
+      const customQuestion = document.getElementById('customQuestion');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const resultArea = document.getElementById('resultArea');
+
+      // Показываем предпросмотр при выборе файла
+      screenshotInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+          resultArea.style.display = 'none'; // скрыть старый результат
+        } else {
+          previewImg.style.display = 'none';
+        }
+      });
+
+      // Анализ
+      analyzeBtn.addEventListener('click', async () => {
+        const file = screenshotInput.files[0];
+        if (!file) {
+          alert('Пожалуйста, сначала выберите скриншот');
+          return;
+        }
+
+        // Показываем лоадер и очищаем область результата
+        resultArea.style.display = 'block';
+        resultArea.innerHTML = '<span class="loader"></span> Анализирую фото...';
+        analyzeBtn.disabled = true;
+
+        try {
+          // Преобразуем файл в URL для передачи в puter.ai.chat
+          const imageUrl = URL.createObjectURL(file);
+          
+          // Промпт: проверка адреса
+          let promptText = customQuestion.value.trim();
+          if (!promptText) {
+            promptText = `Ты — эксперт по проверке адресов доставки. На скриншоте указан адрес из приложения Pinduoduo (или другого магазина). Внимательно прочитай текст на изображении. Определи, корректен ли этот адрес для отправки посылки в Казахстан. Если есть ошибки, укажи их. Если адрес верный, подтверди это. Ответь коротко, только по делу, на русском языке.`;
+          } else {
+            promptText = `Пользователь спрашивает: "${promptText}". Ответь, проанализировав скриншот.`;
+          }
+
+          // Вызов Puter.js AI
+          const response = await puter.ai.chat(promptText, imageUrl, {
+            model: "google/gemini-2.5-flash", // можно заменить на другую, но эта отлично подходит
+          });
+          
+          // Освобождаем URL
+          URL.revokeObjectURL(imageUrl);
+          
+          // Выводим результат с красивым оформлением
+          resultArea.innerHTML = `<strong>🧠 Результат проверки:</strong><br>${response}`;
+        } catch (error) {
+          console.error(error);
+          resultArea.innerHTML = `<strong>❌ Ошибка:</strong> Не удалось проанализировать фото. Попробуйте другой снимок или повторите позже.`;
+        } finally {
+          analyzeBtn.disabled = false;
+        }
+      });
+
+      // Для удобства: клик по лейблу открывает выбор файла
+      document.querySelector('.file-label').addEventListener('click', () => {
+        screenshotInput.click();
+      });
+
+      console.log('TimCargo — сайт готов. Блок проверки адреса через Puter.js работает.');
     })();
   </script>
 </body>
