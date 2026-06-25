@@ -246,7 +246,7 @@
 
   <!-- Блок проверки адреса (без кода) -->
   <section class="address-check-section fade-up" id="addressCheck">
-    <div class="section-title"><h2>📸 Проверка адреса по скриншоту</h2><p>Загрузите скриншот из Pinduoduo — ИИ проверит корректность адреса</p></div>
+    <div class="section-title"><h2>📸 Проверка адреса по скриншоту</h2><p>Загрузите скриншот из Pinduoduo — мы проверим корректность адреса</p></div>
     <div class="check-card">
       <div class="file-upload-area"><label class="file-label" for="screenshotInput">📂 Выбрать скриншот</label><input type="file" id="screenshotInput" accept="image/*" style="display:none;"><img id="previewImage" class="preview-img" alt="Предпросмотр"></div>
       <button id="analyzeBtn" class="btn btn-primary analyze-btn">🔍 Проверить адрес</button>
@@ -292,25 +292,41 @@
 
 <script>
   (function(){
-    // Анимация, общие функции
+    // Анимация появления
     const fades = document.querySelectorAll('.fade-up');
     const obs = new IntersectionObserver(entries => entries.forEach(e=>e.isIntersecting&&(e.target.classList.add('visible'),obs.unobserve(e.target))),{threshold:0.15});
     fades.forEach(el=>obs.observe(el));
+
+    // Липкая кнопка
     const sticky = document.getElementById('stickyContactBtn'), hero = document.getElementById('hero');
     function toggleSticky(){if(sticky&&hero) sticky.style.display = hero.getBoundingClientRect().bottom <0 ? 'block' : 'none';}
     window.addEventListener('scroll',toggleSticky);window.addEventListener('load',toggleSticky);
+
+    // Поделиться
     document.getElementById('shareBtn').addEventListener('click',async()=>{if(navigator.share) try{await navigator.share({title:'TimCargo Булаево',url:location.href});}catch(e){} else try{await navigator.clipboard.writeText(location.href);alert('✅ Ссылка скопирована');}catch(e){prompt('Скопируйте ссылку:',location.href);}});
     document.getElementById('mapBtn').addEventListener('click',()=>window.open('https://2gis.kz/bulaevo/geo/70030076178855490','_blank'));
+
+    // Копирование адреса
     function copyText(txt){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(ta);return ok;}
     document.querySelectorAll('.copy-btn').forEach(btn=>{btn.addEventListener('click',()=>{const txt=btn.getAttribute('data-copy');if(copyText(txt)){btn.innerHTML='✅ Скопировано';btn.style.background='var(--red-accent)';btn.style.color='white';setTimeout(()=>{btn.innerHTML='📋 Копировать';btn.style.background='transparent';btn.style.color='var(--red-accent)';},1500);}else alert('Не удалось скопировать');});});
+
+    // FAQ
     document.querySelectorAll('.faq-question').forEach(q=>{q.addEventListener('click',()=>{const item=q.parentElement;document.querySelectorAll('.faq-item.open').forEach(open=>{if(open!==item)open.classList.remove('open');});item.classList.toggle('open');});});
 
-    // ----- Анализ фото (без кода, только проверка адреса) -----
+    // ----- ЛОКАЛЬНАЯ ПРОВЕРКА АДРЕСА (без воркера) -----
     const screenshotInput = document.getElementById('screenshotInput');
     const previewImg = document.getElementById('previewImage');
     const analyzeBtn = document.getElementById('analyzeBtn');
     const resultArea = document.getElementById('resultArea');
-    const WORKER_URL = 'https://ai.lazyshadow777.workers.dev'; // ваш воркер
+
+    const expectedParts = [
+      '浙江省',
+      '金华市',
+      '义乌市',
+      '福田街道',
+      '龙岗路一街6号',
+      '8787库房'
+    ];
 
     screenshotInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -330,16 +346,13 @@
         await worker.terminate();
         if (!text || text.trim().length===0) throw new Error('Текст не распознан');
 
-        const prompt = `Ты — эксперт по проверке адресов Pinduoduo. Эталон адреса: 浙江省 金华市 义乌市 福田街道 龙岗路一街6号 8787库房. Распознанный текст: """${text}""". Проверь, содержит ли распознанный текст все элементы эталона. Игнорируй имена, номера телефонов, служебные слова. Ответ дай кратко: [ВЕРДИКТ] — ✅ Адрес верный / ❌ Адрес неверный (если неверный, укажи, чего не хватает). Затем одна фраза: если адрес верный — "Не забудьте поставить галочку", если неверный — "Посмотрите видео и скопируйте адрес с сайта".`;
+        let foundParts = expectedParts.filter(part => text.includes(part));
+        let allFound = foundParts.length === expectedParts.length;
+        let verdict = allFound ? '✅ Адрес верный' : '❌ Адрес неверный';
+        let details = allFound ? 'Все части адреса присутствуют.' : `Отсутствуют: ${expectedParts.filter(p => !text.includes(p)).join(', ')}`;
+        let advice = allFound ? 'Не забудьте поставить галочку' : 'Посмотрите видео и скопируйте адрес с сайта';
 
-        const aiResp = await fetch(WORKER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: prompt, history: [] })
-        });
-        if (!aiResp.ok) throw new Error(`Ошибка ИИ: ${aiResp.status}`);
-        const aiData = await aiResp.json();
-        resultArea.innerHTML = aiData.response || 'Нет ответа от ИИ';
+        resultArea.innerHTML = `${verdict}\n${details}\n\n💡 ${advice}`;
       } catch (err) {
         resultArea.innerHTML = '❌ Ошибка: ' + err.message;
       } finally {
