@@ -190,6 +190,29 @@
     .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 1.2rem; }
     .footer { text-align: center; padding: 2.5rem 0 2rem; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem; }
     @media (max-width: 600px) { .btn { width: 100%; justify-content: center; } .hero-buttons { flex-direction: column; } .tariff-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* ── Блок личного кода ── */
+    .mycode-section { padding: 2.5rem 0; }
+    .mycode-card {
+      background: linear-gradient(145deg, #1a0d10, #1a1a1a);
+      border: 1px solid var(--red-accent);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .mycode-label { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.8rem; }
+    .mycode-value {
+      font-size: 3rem; font-weight: 800; letter-spacing: 4px;
+      color: var(--red-accent); text-shadow: 0 0 20px var(--red-glow);
+      margin: 0.5rem 0 1.2rem; font-family: monospace;
+      min-height: 3.5rem; display: flex; align-items: center; justify-content: center;
+    }
+    .mycode-value .code-loader { font-size: 1.2rem; letter-spacing: 0; color: var(--text-muted); font-weight: 400; }
+    .mycode-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .mycode-hint { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); }
+    .mycode-hint strong { color: var(--text-secondary); }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -296,6 +319,26 @@
     </div>
   </section>
 
+  <!-- ── БЛОК ЛИЧНОГО КОДА ── -->
+  <section class="mycode-section fade-up" id="mycode">
+    <div class="section-title">
+      <h2>🔑 Ваш личный код</h2>
+      <p>Этот код нужно вписать в поле имени получателя при оформлении заказа на Pinduoduo</p>
+    </div>
+    <div class="mycode-card">
+      <div class="mycode-label">Ваш персональный код для заказов:</div>
+      <div class="mycode-value" id="mycodeValue"><span class="code-loader">⏳ Загружаю...</span></div>
+      <div class="mycode-actions">
+        <button class="btn btn-primary btn-small" id="copyCodeBtn">📋 Скопировать код</button>
+        <button class="btn btn-outline btn-small" id="refreshCodeBtn">🔄 Новый код</button>
+      </div>
+      <div class="mycode-hint">
+        Вставьте код в поле <strong>«Имя получателя»</strong> именно в таком формате.<br>
+        Пример: <strong>低调NORD <span id="mycodeInline">...</span></strong>
+      </div>
+    </div>
+  </section>
+
   <section class="contacts-section fade-up" id="contacts">
     <div class="section-title"><h2>Свяжитесь с нами</h2></div>
     <div class="contact-buttons">
@@ -321,7 +364,6 @@
 <footer class="footer"><div class="container"><p>TimCargo Булаево — Доставка из Китая</p><p>© 2026</p></div></footer>
 <div class="sticky-contact" id="stickyContactBtn"><a href="#contacts" class="btn btn-primary">💬 Связаться</a></div>
 
-<!-- Tesseract загружается лениво, только когда нужен -->
 <script>
 (function () {
   // ── Анимация появления ──
@@ -450,41 +492,13 @@
       progressBar.style.width  = '55%';
       progressLabel.textContent = '🤖 ИИ читает адрес...';
 
-      const prompt = `Посмотри на этот скриншот из приложения Pinduoduo (китайский маркетплейс).
-Найди в нём адрес доставки и проверь, содержит ли он ВСЕ следующие части (пробелы и переносы строк не важны, ищи сами иероглифы):
+      // Запрос идёт на Cloudflare Worker (прокси), а не напрямую в Anthropic
+      const WORKER_URL = 'https://code-generator.lazyshadow777.workers.dev';
 
-1. 浙江省
-2. 金华市
-3. 义乌市
-4. 福田街道
-5. 龙岗路一街6号
-6. 8787库房
-
-Также проверь: есть ли в поле имени получателя личный код в формате "XXXX 22" (4 цифры/буквы, пробел, потом "22")? Например "1177 22" или "ABCD 22".
-
-Ответь ТОЛЬКО в JSON без каких-либо пояснений и без markdown-блоков:
-{
-  "found": ["список найденных частей"],
-  "missing": ["список отсутствующих частей"],
-  "hasPersonalCode": true или false,
-  "personalCode": "найденный код или null",
-  "allCorrect": true или false
-}`;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch(`${WORKER_URL}/api/claude`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 500,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-              { type: 'text', text: prompt }
-            ]
-          }]
-        })
+        body: JSON.stringify({ image_base64: base64, media_type: mediaType })
       });
 
       progressBar.style.width  = '85%';
@@ -492,13 +506,11 @@
 
       if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.error?.message || 'Ошибка API');
+        throw new Error(err.error || 'Ошибка сервера');
       }
 
-      const data = await response.json();
-      const rawText = data.content.map(b => b.text || '').join('').trim();
-      const clean = rawText.replace(/```json|```/g, '').trim();
-      const result = JSON.parse(clean);
+      const result = await response.json();
+      if (result.error) throw new Error(result.error);
 
       progressBar.style.width  = '100%';
       progressLabel.textContent = '✅ Готово';
@@ -561,6 +573,61 @@
       reader.readAsDataURL(file);
     });
   }
+
+  // ═══════════════════════════════════════════════════
+  // БЛОК ЛИЧНОГО КОДА
+  // ═══════════════════════════════════════════════════
+
+  const WORKER = 'https://code-generator.lazyshadow777.workers.dev';
+  const codeValueEl  = document.getElementById('mycodeValue');
+  const codeInlineEl = document.getElementById('mycodeInline');
+  const copyCodeBtn  = document.getElementById('copyCodeBtn');
+  const refreshCodeBtn = document.getElementById('refreshCodeBtn');
+
+  let currentCode = null;
+
+  async function loadCode() {
+    codeValueEl.innerHTML = '<span class="code-loader">⏳ Загружаю...</span>';
+    try {
+      const res = await fetch(`${WORKER}/api/get-code`);
+      const data = await res.json();
+      currentCode = data.code;
+      codeValueEl.textContent = currentCode;
+      if (codeInlineEl) codeInlineEl.textContent = currentCode;
+    } catch (e) {
+      codeValueEl.innerHTML = '<span class="code-loader">❌ Ошибка загрузки</span>';
+    }
+  }
+
+  async function refreshCode() {
+    refreshCodeBtn.disabled = true;
+    codeValueEl.innerHTML = '<span class="code-loader">🔄 Обновляю...</span>';
+    try {
+      const res = await fetch(`${WORKER}/api/refresh-code`, { method: 'POST' });
+      const data = await res.json();
+      currentCode = data.code;
+      codeValueEl.textContent = currentCode;
+      if (codeInlineEl) codeInlineEl.textContent = currentCode;
+    } catch (e) {
+      codeValueEl.innerHTML = '<span class="code-loader">❌ Ошибка</span>';
+    } finally {
+      refreshCodeBtn.disabled = false;
+    }
+  }
+
+  copyCodeBtn.addEventListener('click', () => {
+    if (!currentCode) return;
+    if (copyText(currentCode)) {
+      copyCodeBtn.innerHTML = '✅ Скопировано';
+      copyCodeBtn.style.background = '#22c55e';
+      setTimeout(() => { copyCodeBtn.innerHTML = '📋 Скопировать код'; copyCodeBtn.style.background = ''; }, 1500);
+    }
+  });
+
+  refreshCodeBtn.addEventListener('click', refreshCode);
+
+  // Загружаем код при открытии страницы
+  loadCode();
 
 })();
 </script>
