@@ -9,7 +9,6 @@
   <meta name="theme-color" content="#0a0a0a">
   <title>TimCargo Булаево | Карго-доставка из Китая</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
       --bg-primary: #0a0a0a;
@@ -64,7 +63,8 @@
       background: linear-gradient(180deg, #ffffff 0%, #b0b0b0 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .logo-text span { color: var(--red-accent); background: none; -webkit-text-fill-color: var(--red-accent); }
+    .logo-text .red { color: var(--red-accent); background: none; -webkit-text-fill-color: var(--red-accent); }
+    .logo-text .sub { font-size: 1.4rem; }
     .hero { text-align: center; padding: 1.5rem 0 3rem; }
     .hero h1 { font-size: clamp(2.2rem, 8vw, 3.6rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -1.2px; }
     .hero .highlight { color: var(--red-accent); text-shadow: 0 0 25px var(--red-glow); }
@@ -80,31 +80,14 @@
     }
     .btn-primary { background: linear-gradient(145deg, var(--red-accent), var(--red-dark)); color: white; box-shadow: 0 8px 25px rgba(232, 17, 45, 0.45); border: 1px solid rgba(255,255,255,0.1); }
     .btn-primary:hover { box-shadow: 0 12px 32px rgba(255,59,74,0.6); transform: translateY(-3px); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-outline { background: transparent; color: white; border: 1.5px solid var(--border-color); backdrop-filter: blur(4px); }
     .btn-outline:hover { border-color: var(--red-accent); box-shadow: 0 0 20px rgba(232,17,45,0.25); background: rgba(232,17,45,0.08); transform: translateY(-2px); }
     .btn-small { padding: 0.7rem 1.6rem; font-size: 0.9rem; }
-    .qr-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 1rem;
-    }
-    .qr-block img {
-      width: 80vw;
-      max-width: 400px;
-      height: auto;
-      border-radius: 20px;
-      background: white;
-      padding: 12px;
-      box-shadow: 0 0 20px rgba(232, 17, 45, 0.4);
-      cursor: pointer;
-    }
+    .qr-block { display: flex; flex-direction: column; align-items: center; margin-top: 1rem; }
+    .qr-block img { width: 80vw; max-width: 400px; height: auto; border-radius: 20px; background: white; padding: 12px; box-shadow: 0 0 20px rgba(232, 17, 45, 0.4); cursor: pointer; }
     .qr-block img:hover { transform: scale(1.05); }
-    .qr-block span {
-      margin-top: 0.5rem;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
+    .qr-block span { margin-top: 0.5rem; color: var(--text-muted); font-size: 0.85rem; }
     .sticky-contact { position: fixed; bottom: 25px; right: 25px; z-index: 999; display: none; animation: pop-in 0.4s ease; }
     @keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     .tariffs-section { padding: 3rem 0; }
@@ -124,73 +107,88 @@
     .info-icon { font-size: 2rem; flex-shrink: 0; }
     .gallery-section { padding: 2.5rem 0; }
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
-    .gallery-item { background: var(--bg-card); border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 1 / 1; border: 1px solid var(--border-color); transition: var(--transition-smooth); }
+    .gallery-item {
+      background: var(--bg-card); border-radius: var(--radius-sm); overflow: hidden;
+      aspect-ratio: 1 / 1; border: 1px solid var(--border-color); transition: var(--transition-smooth);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; color: var(--text-muted);
+    }
     .gallery-item iframe { width: 100%; height: 100%; border: none; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
     .gallery-item:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
+
+    /* ===== БЛОК ПРОВЕРКИ АДРЕСА ===== */
     .address-check-section { padding: 2.5rem 0; }
     .check-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 2rem;
-      max-width: 700px;
-      margin: 0 auto;
-      transition: var(--transition-smooth);
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 2rem; max-width: 700px;
+      margin: 0 auto; transition: var(--transition-smooth);
     }
     .check-card:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
+
+    /* FIX 1: нет JS-обработчика на label, используем нативный for= */
+    .file-upload-area { display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .file-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-secondary);
-      border: 1px dashed var(--red-accent);
-      border-radius: 40px;
-      padding: 0.8rem 1.5rem;
-      cursor: pointer;
-      transition: 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg-secondary); border: 1px dashed var(--red-accent);
+      border-radius: 40px; padding: 0.8rem 1.5rem;
+      cursor: pointer; transition: 0.2s; user-select: none;
     }
     .file-label:hover { background: rgba(232,17,45,0.1); }
+    .file-name {
+      font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;
+    }
     .preview-img {
-      margin-top: 1rem;
-      max-width: 100%;
-      max-height: 200px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      display: none;
+      margin-top: 0.5rem; max-width: 100%; max-height: 200px;
+      border-radius: 12px; border: 1px solid var(--border-color); display: none;
     }
-    .analyze-btn { width:100%; margin-top:1rem; }
+    .analyze-btn { width: 100%; margin-top: 1rem; }
     .result-box {
-      margin-top:1.5rem; padding:1rem; background: var(--bg-secondary);
+      margin-top: 1.5rem; padding: 1.2rem; background: var(--bg-secondary);
       border-radius: var(--radius-sm); border-left: 3px solid var(--red-accent);
-      white-space: pre-wrap; color: var(--text-secondary); font-size:0.95rem;
+      color: var(--text-secondary); font-size: 0.95rem; display: none;
     }
-    .loader {
-      display: inline-block; width:20px; height:20px; border:2px solid #fff; border-radius:50%;
-      border-top-color:transparent; animation: spin 0.6s linear infinite; margin-right:8px;
+    .result-box.ok { border-color: #22c55e; }
+    .result-box.err { border-color: var(--red-accent); }
+
+    /* Прогресс OCR */
+    .ocr-progress-wrap {
+      display: none; margin-top: 1rem;
+      background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 1rem;
     }
+    .ocr-progress-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+    .ocr-progress-bar-bg { background: var(--border-color); border-radius: 99px; height: 6px; overflow: hidden; }
+    .ocr-progress-bar { height: 100%; width: 0%; background: var(--red-accent); border-radius: 99px; transition: width 0.3s; }
+
+    .result-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-family: monospace; font-size: 0.9rem; }
+    .result-row .icon { font-size: 1rem; flex-shrink: 0; }
+    .result-verdict { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+
+    .loader { display: inline-block; width: 18px; height: 18px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-right: 8px; vertical-align: middle; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
     .tutorials-section { padding: 2.5rem 0; }
     .tutorial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
     .tutorial-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; transition: var(--transition-smooth); }
     .tutorial-card:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
     .tutorial-card h3 { font-size: 1.3rem; margin-bottom: 0.8rem; }
     .address-lines { background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 0.8rem; margin: 1rem 0; }
-    .address-row { display: flex; align-items: center; justify-content: space-between; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 6px; font-family: monospace; word-break: break-all; }
-    .copy-btn { background: transparent; border: 1px solid var(--red-accent); color: var(--red-accent); border-radius: 6px; padding: 0.4rem 1rem; cursor: pointer; transition: 0.2s; }
+    .address-row { display: flex; align-items: center; justify-content: space-between; background: #0a0a0a; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 6px; font-family: monospace; word-break: break-all; gap: 8px; }
+    .copy-btn { background: transparent; border: 1px solid var(--red-accent); color: var(--red-accent); border-radius: 6px; padding: 0.4rem 1rem; cursor: pointer; transition: 0.2s; white-space: nowrap; flex-shrink: 0; }
     .copy-btn:hover { background: var(--red-accent); color: white; }
-    .reminder { font-size:0.9rem; color:var(--red-accent); text-align:center; margin-top:0.8rem; }
+    .reminder { font-size: 0.9rem; color: var(--red-accent); text-align: center; margin-top: 0.8rem; }
     .contacts-section { padding: 2.5rem 0; }
     .contact-buttons { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-bottom: 1.5rem; }
     .contact-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 1.8rem; text-align: center; max-width: 480px; margin: 0 auto; border: 1px solid var(--border-color); }
     .faq-section { padding: 2.5rem 0 3rem; }
     .faq-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 10px; overflow: hidden; }
-    .faq-question { width:100%; background:none; border:none; color:var(--text-primary); padding:1.2rem 1.5rem; text-align:left; font-size:1rem; font-weight:600; display:flex; justify-content:space-between; cursor:pointer; font-family: var(--font-main); }
-    .faq-icon { transition:transform 0.3s; color:var(--red-accent); font-size:1.5rem; }
-    .faq-item.open .faq-icon { transform:rotate(45deg); }
-    .faq-answer { max-height:0; overflow:hidden; transition:max-height 0.4s; padding:0 1.5rem; color:var(--text-secondary); }
-    .faq-item.open .faq-answer { max-height:200px; padding-bottom:1.2rem; }
-    .footer { text-align:center; padding:2.5rem 0 2rem; border-top:1px solid var(--border-color); color:var(--text-muted); font-size:0.9rem; }
-    @media (max-width:600px) { .btn { width:100%; justify-content:center; } .hero-buttons { flex-direction:column; } .tariff-grid { grid-template-columns:1fr 1fr; } }
+    .faq-question { width: 100%; background: none; border: none; color: var(--text-primary); padding: 1.2rem 1.5rem; text-align: left; font-size: 1rem; font-weight: 600; display: flex; justify-content: space-between; cursor: pointer; font-family: var(--font-main); }
+    .faq-icon { transition: transform 0.3s; color: var(--red-accent); font-size: 1.5rem; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s; padding: 0 1.5rem; color: var(--text-secondary); }
+    .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 1.2rem; }
+    .footer { text-align: center; padding: 2.5rem 0 2rem; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem; }
+    @media (max-width: 600px) { .btn { width: 100%; justify-content: center; } .hero-buttons { flex-direction: column; } .tariff-grid { grid-template-columns: 1fr 1fr; } }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -199,7 +197,7 @@
 <header class="header container">
   <div class="logo-area">
     <div class="logo-icon">📦</div>
-    <div class="logo-text">Tim<span>Cargo</span> <span style="font-size:1.4rem;">Булаево</span></div>
+    <div class="logo-text">Tim<span class="red">Cargo</span> <span class="red sub">Булаево</span></div>
   </div>
 </header>
 
@@ -207,8 +205,14 @@
   <h1>Карго доставка <br><span class="highlight">из Китая</span></h1>
   <p class="hero-tagline">Ваши покупки — наша забота</p>
   <div class="hero-features"><span>Быстро</span><span>Надёжно</span><span>По факту веса</span></div>
-  <div class="hero-buttons"><a href="#contacts" class="btn btn-primary">💬 Связаться</a><button class="btn btn-outline" id="shareBtn">🔗 Поделиться сайтом</button></div>
-  <div class="qr-block"><img src="qr.jpeg" alt="QR-код сайта" id="qrCodeImg" onerror="this.style.display='none';"><span>Отсканируйте, чтобы открыть сайт</span></div>
+  <div class="hero-buttons">
+    <a href="#contacts" class="btn btn-primary">💬 Связаться</a>
+    <button class="btn btn-outline" id="shareBtn">🔗 Поделиться сайтом</button>
+  </div>
+  <div class="qr-block">
+    <img src="qr.jpeg" alt="QR-код сайта" id="qrCodeImg" onerror="this.style.display='none';">
+    <span>Отсканируйте, чтобы открыть сайт</span>
+  </div>
 </section>
 
 <main class="container">
@@ -237,20 +241,38 @@
   <section class="gallery-section fade-up">
     <div class="section-title"><h2>Фото и видео</h2><p>Посылки, склад, оплата и другие материалы</p></div>
     <div class="gallery-grid">
-      <div class="gallery-item"><img src="placeholder1.jpg" alt="Фото" onerror="this.outerHTML='<div class=gallery-item>📷 Фото</div>'"></div>
-      <div class="gallery-item"><img src="placeholder2.jpg" alt="Склад" onerror="this.outerHTML='<div class=gallery-item>🏭 Склад</div>'"></div>
+      <div class="gallery-item">📷</div>
+      <div class="gallery-item">🏭</div>
       <div class="gallery-item"><iframe src="https://www.youtube.com/embed/R9tOwPetH7M" allowfullscreen></iframe></div>
-      <div class="gallery-item"><img src="placeholder1.jpg" alt="Доп." onerror="this.outerHTML='<div class=gallery-item>📦 Посылка</div>'"></div>
+      <div class="gallery-item">📦</div>
     </div>
   </section>
 
-  <!-- Блок проверки адреса (без кода) -->
+  <!-- ===== БЛОК ПРОВЕРКИ АДРЕСА ===== -->
   <section class="address-check-section fade-up" id="addressCheck">
-    <div class="section-title"><h2>📸 Проверка адреса по скриншоту</h2><p>Загрузите скриншот из Pinduoduo — мы проверим корректность адреса</p></div>
+    <div class="section-title">
+      <h2>📸 Проверка адреса</h2>
+      <p>Загрузите скриншот из Pinduoduo — проверим, правильно ли указан адрес склада</p>
+    </div>
     <div class="check-card">
-      <div class="file-upload-area"><label class="file-label" for="screenshotInput">📂 Выбрать скриншот</label><input type="file" id="screenshotInput" accept="image/*" style="display:none;"><img id="previewImage" class="preview-img" alt="Предпросмотр"></div>
+
+      <!-- FIX 1: label с for= без JS — нативное открытие файла на iOS и Android -->
+      <div class="file-upload-area">
+        <label class="file-label" for="screenshotInput">📂 Выбрать скриншот</label>
+        <input type="file" id="screenshotInput" accept="image/*" style="display:none;" aria-label="Выбор скриншота">
+        <div class="file-name" id="fileName">Файл не выбран</div>
+        <!-- FIX 3: предпросмотр сбрасывается при каждом новом выборе файла -->
+        <img id="previewImage" class="preview-img" alt="Предпросмотр скриншота">
+      </div>
+
+      <!-- FIX 2: прогресс-бар вместо спиннера, пользователь видит загрузку модели -->
+      <div class="ocr-progress-wrap" id="ocrProgressWrap">
+        <div class="ocr-progress-label" id="ocrProgressLabel">Загрузка модели распознавания...</div>
+        <div class="ocr-progress-bar-bg"><div class="ocr-progress-bar" id="ocrProgressBar"></div></div>
+      </div>
+
       <button id="analyzeBtn" class="btn btn-primary analyze-btn">🔍 Проверить адрес</button>
-      <div id="resultArea" class="result-box" style="display:none;"></div>
+      <div id="resultArea" class="result-box"></div>
     </div>
   </section>
 
@@ -275,8 +297,16 @@
 
   <section class="contacts-section fade-up" id="contacts">
     <div class="section-title"><h2>Свяжитесь с нами</h2></div>
-    <div class="contact-buttons"><a href="https://wa.me/77773363666" class="btn btn-primary">💬 WhatsApp</a><a href="https://t.me/TimCargoBot" class="btn btn-outline">✈️ Telegram</a><a href="tel:+77773363666" class="btn btn-outline">📞 Позвонить</a></div>
-    <div class="contact-card"><p><strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30</p><p><strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00</p><button class="btn btn-outline btn-small" id="mapBtn">🗺️ Открыть карту</button></div>
+    <div class="contact-buttons">
+      <a href="https://wa.me/77773363666" class="btn btn-primary">💬 WhatsApp</a>
+      <a href="https://t.me/TimCargoBot" class="btn btn-outline">✈️ Telegram</a>
+      <a href="tel:+77773363666" class="btn btn-outline">📞 Позвонить</a>
+    </div>
+    <div class="contact-card">
+      <p><strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30</p>
+      <p><strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00</p>
+      <button class="btn btn-outline btn-small" id="mapBtn" style="margin-top:1rem;">🗺️ Открыть карту</button>
+    </div>
   </section>
 
   <section class="faq-section fade-up">
@@ -290,77 +320,215 @@
 <footer class="footer"><div class="container"><p>TimCargo Булаево — Доставка из Китая</p><p>© 2026</p></div></footer>
 <div class="sticky-contact" id="stickyContactBtn"><a href="#contacts" class="btn btn-primary">💬 Связаться</a></div>
 
+<!-- Tesseract загружается лениво, только когда нужен -->
 <script>
-  (function(){
-    // Анимация появления
-    const fades = document.querySelectorAll('.fade-up');
-    const obs = new IntersectionObserver(entries => entries.forEach(e=>e.isIntersecting&&(e.target.classList.add('visible'),obs.unobserve(e.target))),{threshold:0.15});
-    fades.forEach(el=>obs.observe(el));
+(function () {
+  // ── Анимация появления ──
+  const fades = document.querySelectorAll('.fade-up');
+  const obs = new IntersectionObserver(entries =>
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }),
+    { threshold: 0.15 }
+  );
+  fades.forEach(el => obs.observe(el));
 
-    // Липкая кнопка
-    const sticky = document.getElementById('stickyContactBtn'), hero = document.getElementById('hero');
-    function toggleSticky(){if(sticky&&hero) sticky.style.display = hero.getBoundingClientRect().bottom <0 ? 'block' : 'none';}
-    window.addEventListener('scroll',toggleSticky);window.addEventListener('load',toggleSticky);
+  // ── Липкая кнопка ──
+  const sticky = document.getElementById('stickyContactBtn');
+  const hero   = document.getElementById('hero');
+  function toggleSticky() {
+    if (sticky && hero) sticky.style.display = hero.getBoundingClientRect().bottom < 0 ? 'block' : 'none';
+  }
+  window.addEventListener('scroll', toggleSticky);
+  window.addEventListener('load', toggleSticky);
 
-    // Поделиться
-    document.getElementById('shareBtn').addEventListener('click',async()=>{if(navigator.share) try{await navigator.share({title:'TimCargo Булаево',url:location.href});}catch(e){} else try{await navigator.clipboard.writeText(location.href);alert('✅ Ссылка скопирована');}catch(e){prompt('Скопируйте ссылку:',location.href);}});
-    document.getElementById('mapBtn').addEventListener('click',()=>window.open('https://2gis.kz/bulaevo/geo/70030076178855490','_blank'));
+  // ── Поделиться ──
+  document.getElementById('shareBtn').addEventListener('click', async () => {
+    if (navigator.share) {
+      try { await navigator.share({ title: 'TimCargo Булаево', url: location.href }); } catch (e) {}
+    } else {
+      try { await navigator.clipboard.writeText(location.href); alert('✅ Ссылка скопирована'); }
+      catch (e) { prompt('Скопируйте ссылку:', location.href); }
+    }
+  });
 
-    // Копирование адреса
-    function copyText(txt){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(ta);return ok;}
-    document.querySelectorAll('.copy-btn').forEach(btn=>{btn.addEventListener('click',()=>{const txt=btn.getAttribute('data-copy');if(copyText(txt)){btn.innerHTML='✅ Скопировано';btn.style.background='var(--red-accent)';btn.style.color='white';setTimeout(()=>{btn.innerHTML='📋 Копировать';btn.style.background='transparent';btn.style.color='var(--red-accent)';},1500);}else alert('Не удалось скопировать');});});
+  document.getElementById('mapBtn').addEventListener('click', () =>
+    window.open('https://2gis.kz/bulaevo/geo/70030076178855490', '_blank'));
 
-    // FAQ
-    document.querySelectorAll('.faq-question').forEach(q=>{q.addEventListener('click',()=>{const item=q.parentElement;document.querySelectorAll('.faq-item.open').forEach(open=>{if(open!==item)open.classList.remove('open');});item.classList.toggle('open');});});
-
-    // ----- ЛОКАЛЬНАЯ ПРОВЕРКА АДРЕСА (без воркера) -----
-    const screenshotInput = document.getElementById('screenshotInput');
-    const previewImg = document.getElementById('previewImage');
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const resultArea = document.getElementById('resultArea');
-
-    const expectedParts = [
-      '浙江省',
-      '金华市',
-      '义乌市',
-      '福田街道',
-      '龙岗路一街6号',
-      '8787库房'
-    ];
-
-    screenshotInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if(file){ const reader = new FileReader(); reader.onload = ev=>{ previewImg.src=ev.target.result; previewImg.style.display='block'; }; reader.readAsDataURL(file); resultArea.style.display='none';}
-      else previewImg.style.display='none';
+  // ── Копирование адреса ──
+  function copyText(txt) {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta); return ok;
+  }
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const txt = btn.getAttribute('data-copy');
+      if (copyText(txt)) {
+        btn.innerHTML = '✅ Скопировано'; btn.style.background = 'var(--red-accent)'; btn.style.color = 'white';
+        setTimeout(() => { btn.innerHTML = '📋 Копировать'; btn.style.background = 'transparent'; btn.style.color = 'var(--red-accent)'; }, 1500);
+      } else { alert('Не удалось скопировать'); }
     });
+  });
 
-    analyzeBtn.addEventListener('click', async () => {
-      const file = screenshotInput.files[0];
-      if (!file) { alert('Выберите скриншот'); return; }
-      resultArea.style.display='block';
-      resultArea.innerHTML='<span class="loader"></span> Распознаю текст...';
-      analyzeBtn.disabled=true;
-      try {
-        const worker = await Tesseract.createWorker('rus+eng+chi_sim');
-        const { data: { text } } = await worker.recognize(file);
-        await worker.terminate();
-        if (!text || text.trim().length===0) throw new Error('Текст не распознан');
+  // ── FAQ ──
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      document.querySelectorAll('.faq-item.open').forEach(open => { if (open !== item) open.classList.remove('open'); });
+      item.classList.toggle('open');
+    });
+  });
 
-        let foundParts = expectedParts.filter(part => text.includes(part));
-        let allFound = foundParts.length === expectedParts.length;
-        let verdict = allFound ? '✅ Адрес верный' : '❌ Адрес неверный';
-        let details = allFound ? 'Все части адреса присутствуют.' : `Отсутствуют: ${expectedParts.filter(p => !text.includes(p)).join(', ')}`;
-        let advice = allFound ? 'Не забудьте поставить галочку' : 'Посмотрите видео и скопируйте адрес с сайта';
+  // ═══════════════════════════════════════════════════
+  // БЛОК ПРОВЕРКИ АДРЕСА
+  // ═══════════════════════════════════════════════════
 
-        resultArea.innerHTML = `${verdict}\n${details}\n\n💡 ${advice}`;
-      } catch (err) {
-        resultArea.innerHTML = '❌ Ошибка: ' + err.message;
-      } finally {
-        analyzeBtn.disabled=false;
+  const screenshotInput = document.getElementById('screenshotInput');
+  const previewImg      = document.getElementById('previewImage');
+  const fileNameEl      = document.getElementById('fileName');
+  const analyzeBtn      = document.getElementById('analyzeBtn');
+  const resultArea      = document.getElementById('resultArea');
+  const progressWrap    = document.getElementById('ocrProgressWrap');
+  const progressBar     = document.getElementById('ocrProgressBar');
+  const progressLabel   = document.getElementById('ocrProgressLabel');
+
+  // Части адреса, которые должны быть на скриншоте
+  const expectedParts = [
+    { text: '浙江省',      label: 'Провинция 浙江省' },
+    { text: '金华市',      label: 'Город 金华市' },
+    { text: '义乌市',      label: 'Район 义乌市' },
+    { text: '福田街道',    label: 'Улица 福田街道' },
+    { text: '龙岗路一街6号', label: 'Дом 龙岗路一街6号' },
+    { text: '8787库房',    label: 'Склад 8787库房' },
+  ];
+
+  // FIX 1: label уже привязан через for="screenshotInput" — JS не нужен
+  // FIX 3: сбрасываем состояние при каждом выборе нового файла
+  screenshotInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+
+    // Сбрасываем результат и прогресс при новом выборе файла
+    resultArea.style.display   = 'none';
+    resultArea.className       = 'result-box';
+    resultArea.innerHTML       = '';
+    progressWrap.style.display = 'none';
+    progressBar.style.width    = '0%';
+
+    if (file) {
+      fileNameEl.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        previewImg.src         = ev.target.result;
+        previewImg.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      fileNameEl.textContent   = 'Файл не выбран';
+      previewImg.style.display = 'none';
+    }
+  });
+
+  // FIX 2: Tesseract загружается лениво + показываем прогресс загрузки модели
+  analyzeBtn.addEventListener('click', async function () {
+    const file = screenshotInput.files[0];
+    if (!file) { alert('Сначала выберите скриншот'); return; }
+
+    // Состояние "идёт работа"
+    analyzeBtn.disabled        = true;
+    analyzeBtn.innerHTML       = '<span class="loader"></span> Анализирую...';
+    resultArea.style.display   = 'none';
+    resultArea.innerHTML       = '';
+    progressWrap.style.display = 'block';
+    progressBar.style.width    = '0%';
+    progressLabel.textContent  = 'Загрузка модели распознавания (~40 МБ, только первый раз)...';
+
+    try {
+      // Динамически подгружаем Tesseract только в момент нажатия
+      if (typeof Tesseract === 'undefined') {
+        await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
       }
+
+      const worker = await Tesseract.createWorker('chi_sim', 1, {
+        // FIX 2: прогресс-коллбэк даёт пользователю обратную связь
+        logger: m => {
+          if (m.status === 'loading tesseract core') {
+            progressLabel.textContent = '⏳ Загрузка движка...';
+            progressBar.style.width   = '10%';
+          } else if (m.status === 'initializing tesseract') {
+            progressLabel.textContent = '⚙️ Инициализация...';
+            progressBar.style.width   = '25%';
+          } else if (m.status === 'loading language traineddata') {
+            progressLabel.textContent = '📦 Загрузка языкового пакета (китайский)...';
+            progressBar.style.width   = '40%';
+          } else if (m.status === 'initializing api') {
+            progressLabel.textContent = '🔧 Подготовка...';
+            progressBar.style.width   = '70%';
+          } else if (m.status === 'recognizing text') {
+            const pct = Math.round((m.progress || 0) * 100);
+            progressLabel.textContent = `🔍 Распознавание текста... ${pct}%`;
+            progressBar.style.width   = (70 + pct * 0.3) + '%';
+          }
+        }
+      });
+
+      progressLabel.textContent = '🔍 Распознаю текст...';
+      progressBar.style.width   = '75%';
+
+      const { data: { text } } = await worker.recognize(file);
+      await worker.terminate();
+
+      progressBar.style.width   = '100%';
+      progressLabel.textContent = '✅ Готово';
+
+      if (!text || text.trim().length === 0) throw new Error('Текст не удалось распознать. Попробуйте более чёткий скриншот.');
+
+      // Анализируем результат
+      const found   = expectedParts.filter(p => text.includes(p.text));
+      const missing = expectedParts.filter(p => !text.includes(p.text));
+      const allOk   = missing.length === 0;
+
+      let html = `<div class="result-verdict">${allOk ? '✅ Адрес указан верно!' : '❌ Адрес указан неверно'}</div>`;
+
+      found.forEach(p => {
+        html += `<div class="result-row"><span class="icon">✅</span><span>${p.label}</span></div>`;
+      });
+      missing.forEach(p => {
+        html += `<div class="result-row"><span class="icon">❌</span><span>${p.label} — <strong>не найдено</strong></span></div>`;
+      });
+
+      if (allOk) {
+        html += `<br><div>💡 Не забудьте поставить ваш личный код (XXXX 22) в поле получателя.</div>`;
+      } else {
+        html += `<br><div>💡 Посмотрите видео выше и скопируйте адрес с сайта — все поля должны совпадать.</div>`;
+      }
+
+      resultArea.className     = 'result-box ' + (allOk ? 'ok' : 'err');
+      resultArea.innerHTML     = html;
+      resultArea.style.display = 'block';
+
+    } catch (err) {
+      progressWrap.style.display = 'none';
+      resultArea.className       = 'result-box err';
+      resultArea.innerHTML       = '❌ Ошибка: ' + err.message;
+      resultArea.style.display   = 'block';
+    } finally {
+      analyzeBtn.disabled  = false;
+      analyzeBtn.innerHTML = '🔍 Проверить адрес';
+      setTimeout(() => { progressWrap.style.display = 'none'; }, 1500);
+    }
+  });
+
+  // Вспомогательная функция: динамическая загрузка скрипта
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
     });
-    document.querySelector('.file-label').addEventListener('click', ()=>screenshotInput.click());
-  })();
+  }
+
+})();
 </script>
 </body>
 </html>
