@@ -9,6 +9,7 @@
   <meta name="theme-color" content="#0a0a0a">
   <title>TimCargo Булаево | Карго-доставка из Китая</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+  <!-- Tesseract удалён — используем Claude Vision API -->
   <style>
     :root {
       --bg-primary: #0a0a0a;
@@ -265,9 +266,9 @@
         <img id="previewImage" class="preview-img" alt="Предпросмотр скриншота">
       </div>
 
-      <!-- FIX 2: прогресс-бар вместо спиннера, пользователь видит загрузку модели -->
+      <!-- Прогресс анализа через Claude Vision API -->
       <div class="ocr-progress-wrap" id="ocrProgressWrap">
-        <div class="ocr-progress-label" id="ocrProgressLabel">Загрузка модели распознавания...</div>
+        <div class="ocr-progress-label" id="ocrProgressLabel">Отправляю на анализ...</div>
         <div class="ocr-progress-bar-bg"><div class="ocr-progress-bar" id="ocrProgressBar"></div></div>
       </div>
 
@@ -429,78 +430,110 @@
     }
   });
 
-  // FIX 2: Tesseract загружается лениво + показываем прогресс загрузки модели
   analyzeBtn.addEventListener('click', async function () {
     const file = screenshotInput.files[0];
     if (!file) { alert('Сначала выберите скриншот'); return; }
 
-    // Состояние "идёт работа"
     analyzeBtn.disabled        = true;
     analyzeBtn.innerHTML       = '<span class="loader"></span> Анализирую...';
     resultArea.style.display   = 'none';
     resultArea.innerHTML       = '';
     progressWrap.style.display = 'block';
-    progressBar.style.width    = '0%';
-    progressLabel.textContent  = 'Загрузка модели распознавания (~40 МБ, только первый раз)...';
+    progressBar.style.width    = '30%';
+    progressLabel.textContent  = '📤 Отправляю скриншот на анализ...';
 
     try {
-      // Динамически подгружаем Tesseract только в момент нажатия
-      if (typeof Tesseract === 'undefined') {
-        await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+      // Конвертируем файл в base64
+      const base64 = await fileToBase64(file);
+      const mediaType = file.type || 'image/jpeg';
+
+      progressBar.style.width  = '55%';
+      progressLabel.textContent = '🤖 ИИ читает адрес...';
+
+      const prompt = `Посмотри на этот скриншот из приложения Pinduoduo (китайский маркетплейс).
+Найди в нём адрес доставки и проверь, содержит ли он ВСЕ следующие части (пробелы и переносы строк не важны, ищи сами иероглифы):
+
+1. 浙江省
+2. 金华市
+3. 义乌市
+4. 福田街道
+5. 龙岗路一街6号
+6. 8787库房
+
+Также проверь: есть ли в поле имени получателя личный код в формате "XXXX 22" (4 цифры/буквы, пробел, потом "22")? Например "1177 22" или "ABCD 22".
+
+Ответь ТОЛЬКО в JSON без каких-либо пояснений и без markdown-блоков:
+{
+  "found": ["список найденных частей"],
+  "missing": ["список отсутствующих частей"],
+  "hasPersonalCode": true или false,
+  "personalCode": "найденный код или null",
+  "allCorrect": true или false
+}`;
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 500,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+              { type: 'text', text: prompt }
+            ]
+          }]
+        })
+      });
+
+      progressBar.style.width  = '85%';
+      progressLabel.textContent = '📊 Обрабатываю результат...';
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || 'Ошибка API');
       }
 
-      const worker = await Tesseract.createWorker('chi_sim', 1, {
-        // FIX 2: прогресс-коллбэк даёт пользователю обратную связь
-        logger: m => {
-          if (m.status === 'loading tesseract core') {
-            progressLabel.textContent = '⏳ Загрузка движка...';
-            progressBar.style.width   = '10%';
-          } else if (m.status === 'initializing tesseract') {
-            progressLabel.textContent = '⚙️ Инициализация...';
-            progressBar.style.width   = '25%';
-          } else if (m.status === 'loading language traineddata') {
-            progressLabel.textContent = '📦 Загрузка языкового пакета (китайский)...';
-            progressBar.style.width   = '40%';
-          } else if (m.status === 'initializing api') {
-            progressLabel.textContent = '🔧 Подготовка...';
-            progressBar.style.width   = '70%';
-          } else if (m.status === 'recognizing text') {
-            const pct = Math.round((m.progress || 0) * 100);
-            progressLabel.textContent = `🔍 Распознавание текста... ${pct}%`;
-            progressBar.style.width   = (70 + pct * 0.3) + '%';
-          }
-        }
-      });
+      const data = await response.json();
+      const rawText = data.content.map(b => b.text || '').join('').trim();
+      const clean = rawText.replace(/```json|```/g, '').trim();
+      const result = JSON.parse(clean);
 
-      progressLabel.textContent = '🔍 Распознаю текст...';
-      progressBar.style.width   = '75%';
-
-      const { data: { text } } = await worker.recognize(file);
-      await worker.terminate();
-
-      progressBar.style.width   = '100%';
+      progressBar.style.width  = '100%';
       progressLabel.textContent = '✅ Готово';
 
-      if (!text || text.trim().length === 0) throw new Error('Текст не удалось распознать. Попробуйте более чёткий скриншот.');
-
-      // Анализируем результат
-      const found   = expectedParts.filter(p => text.includes(p.text));
-      const missing = expectedParts.filter(p => !text.includes(p.text));
-      const allOk   = missing.length === 0;
-
+      // Строим красивый результат
+      const allOk = result.allCorrect;
       let html = `<div class="result-verdict">${allOk ? '✅ Адрес указан верно!' : '❌ Адрес указан неверно'}</div>`;
 
-      found.forEach(p => {
-        html += `<div class="result-row"><span class="icon">✅</span><span>${p.label}</span></div>`;
+      // Найденные части
+      (result.found || []).forEach(part => {
+        const label = expectedParts.find(p => p.text === part)?.label || part;
+        html += `<div class="result-row"><span class="icon">✅</span><span>${label}</span></div>`;
       });
-      missing.forEach(p => {
-        html += `<div class="result-row"><span class="icon">❌</span><span>${p.label} — <strong>не найдено</strong></span></div>`;
+      // Отсутствующие части
+      (result.missing || []).forEach(part => {
+        const label = expectedParts.find(p => p.text === part)?.label || part;
+        html += `<div class="result-row"><span class="icon">❌</span><span>${label} — <strong>не найдено</strong></span></div>`;
       });
 
-      if (allOk) {
-        html += `<br><div>💡 Не забудьте поставить ваш личный код (XXXX 22) в поле получателя.</div>`;
+      // Личный код
+      html += `<br>`;
+      if (result.hasPersonalCode) {
+        html += `<div class="result-row"><span class="icon">✅</span><span>Личный код найден: <strong>${result.personalCode}</strong></span></div>`;
       } else {
-        html += `<br><div>💡 Посмотрите видео выше и скопируйте адрес с сайта — все поля должны совпадать.</div>`;
+        html += `<div class="result-row"><span class="icon">⚠️</span><span>Личный код <strong>не найден</strong> — обязателен формат XXXX 22</span></div>`;
+      }
+
+      // Итоговый совет
+      html += `<br>`;
+      if (allOk && result.hasPersonalCode) {
+        html += `<div>🎉 Всё отлично! Адрес и личный код указаны верно.</div>`;
+      } else if (allOk && !result.hasPersonalCode) {
+        html += `<div>💡 Адрес верный, но не забудьте добавить ваш личный код в поле имени получателя (формат: XXXX 22). Напишите менеджеру, чтобы узнать свой код.</div>`;
+      } else {
+        html += `<div>💡 Посмотрите видео выше и скопируйте адрес с сайта — все поля должны совпадать.</div>`;
       }
 
       resultArea.className     = 'result-box ' + (allOk ? 'ok' : 'err');
@@ -519,12 +552,13 @@
     }
   });
 
-  // Вспомогательная функция: динамическая загрузка скрипта
-  function loadScript(src) {
+  // Файл → base64 (без префикса data:...)
+  function fileToBase64(file) {
     return new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = src; s.onload = resolve; s.onerror = reject;
-      document.head.appendChild(s);
+      const reader = new FileReader();
+      reader.onload  = e => resolve(e.target.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
   }
 
