@@ -54,7 +54,19 @@
     .section-title p { color: var(--text-secondary); font-size: 1.1rem; max-width: 550px; margin: 0 auto; }
     .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
-    .header { display: flex; justify-content: center; align-items: center; padding: 2rem 0 1rem; }
+    .header { display: flex; justify-content: center; align-items: center; padding: 2rem 0 1rem; position: relative; }
+    .lang-switch {
+      position: absolute; top: 1.6rem; right: 20px;
+      display: flex; background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: 40px; padding: 3px; gap: 2px;
+    }
+    .lang-btn {
+      background: transparent; border: none; color: var(--text-secondary);
+      font-family: var(--font-main); font-weight: 700; font-size: 0.78rem;
+      padding: 0.4rem 0.8rem; border-radius: 30px; cursor: pointer; transition: var(--transition-smooth);
+    }
+    .lang-btn.active { background: var(--red-accent); color: white; box-shadow: 0 0 12px rgba(232,17,45,0.4); }
+    @media (max-width: 420px) { .lang-switch { top: 1rem; right: 12px; } .lang-btn { padding: 0.35rem 0.6rem; font-size: 0.72rem; } }
     .logo-area { display: flex; align-items: center; gap: 12px; }
     .logo-icon { font-size: 2.8rem; filter: drop-shadow(0 0 12px var(--red-accent)); animation: float 3s ease-in-out infinite; }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
@@ -100,6 +112,43 @@
     .oversize-card { background: linear-gradient(145deg, #1c1012, #1a1a1a); border: 1px dashed var(--red-accent); border-radius: var(--radius-md); padding: 1.5rem 2rem; text-align: center; max-width: 450px; margin: 0 auto; }
     .oversize-card h4 { color: var(--red-accent); font-size: 1.2rem; margin-bottom: 0.3rem; }
     .oversize-card .price { font-size: 1.8rem; font-weight: 700; }
+
+    /* ── Курс валют + калькулятор ── */
+    .calc-section { padding: 2.5rem 0; }
+    .calc-card {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 2rem; max-width: 560px;
+      margin: 0 auto; transition: var(--transition-smooth);
+    }
+    .calc-card:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
+    .rate-row {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--bg-secondary); border-radius: var(--radius-sm);
+      padding: 0.9rem 1.2rem; margin-bottom: 1.6rem; text-align: center; flex-wrap: wrap;
+    }
+    .rate-row .rate-icon { font-size: 1.3rem; }
+    .rate-value { color: var(--red-accent); font-weight: 800; font-size: 1.15rem; }
+    .rate-updated { width: 100%; color: var(--text-muted); font-size: 0.78rem; margin-top: 2px; }
+    .calc-field { margin-bottom: 1.2rem; }
+    .calc-field label { display: block; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 6px; }
+    .calc-field input {
+      width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); padding: 0.9rem 1.1rem; color: var(--text-primary);
+      font-size: 1.1rem; font-family: var(--font-main); outline: none; transition: 0.2s;
+    }
+    .calc-field input:focus { border-color: var(--red-accent); box-shadow: 0 0 0 3px rgba(232,17,45,0.15); }
+    .calc-result {
+      margin-top: 1.4rem; background: var(--bg-secondary); border-left: 3px solid var(--red-accent);
+      border-radius: var(--radius-sm); padding: 1.2rem; display: none;
+    }
+    .calc-result .calc-total { font-size: 2rem; font-weight: 800; color: var(--red-accent); text-shadow: 0 0 15px var(--red-glow); }
+    .calc-result .calc-sub { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+    .calc-result .calc-cny { color: var(--text-muted); font-size: 0.85rem; margin-top: 6px; }
+    .calc-divider { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin: 1.8rem 0 1.4rem; position: relative; }
+    .calc-divider::before, .calc-divider::after { content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border-color); }
+    .calc-divider::before { left: 0; }
+    .calc-divider::after { right: 0; }
+
     .info-section { padding: 2.5rem 0; }
     .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
     .info-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 1.5rem 1.2rem; display: flex; align-items: flex-start; gap: 14px; border: 1px solid transparent; transition: var(--transition-smooth); }
@@ -149,47 +198,87 @@
     <div class="logo-icon">📦</div>
     <div class="logo-text">Tim<span class="red">Cargo</span> <span class="red sub">Булаево</span></div>
   </div>
+  <div class="lang-switch" id="langSwitch">
+    <button class="lang-btn" data-lang="ru">RU</button>
+    <button class="lang-btn" data-lang="kk">ҚАЗ</button>
+  </div>
 </header>
 
 <section class="hero container fade-up" id="hero">
-  <h1>Карго доставка <br><span class="highlight">из Китая</span></h1>
-  <p class="hero-tagline">Ваши покупки — наша забота</p>
-  <div class="hero-features"><span>Быстро</span><span>Надёжно</span><span>По факту веса</span></div>
+  <h1 data-i18n-html="heroTitle">Карго доставка <br><span class="highlight">из Китая</span></h1>
+  <p class="hero-tagline" data-i18n="heroTagline">Ваши покупки — наша забота</p>
+  <div class="hero-features"><span data-i18n="heroFeat1">Быстро</span><span data-i18n="heroFeat2">Надёжно</span><span data-i18n="heroFeat3">По факту веса</span></div>
   <div class="hero-buttons">
-    <a href="#contacts" class="btn btn-primary">💬 Связаться</a>
-    <button class="btn btn-outline" id="shareBtn">🔗 Поделиться сайтом</button>
+    <a href="#contacts" class="btn btn-primary" data-i18n="btnContact">💬 Связаться</a>
+    <button class="btn btn-outline" id="shareBtn" data-i18n="btnShare">🔗 Поделиться сайтом</button>
   </div>
   <div class="qr-block">
     <img src="qr.jpeg" alt="QR-код сайта" id="qrCodeImg" onerror="this.style.display='none';">
-    <span>Отсканируйте, чтобы открыть сайт</span>
+    <span data-i18n="qrCaption">Отсканируйте, чтобы открыть сайт</span>
   </div>
 </section>
 
 <main class="container">
 
   <section class="tariffs-section fade-up">
-    <div class="section-title"><h2>Тарифы на доставку</h2><p>Прозрачные цены без скрытых платежей. Оплата только за фактический вес.</p></div>
+    <div class="section-title"><h2 data-i18n="tariffsTitle">Тарифы на доставку</h2><p data-i18n="tariffsDesc">Прозрачные цены без скрытых платежей. Оплата только за фактический вес.</p></div>
     <div class="tariff-grid">
-      <div class="tariff-card"><div class="tariff-weight">от 100 г</div><div class="tariff-price">2150 <small>тг</small></div></div>
-      <div class="tariff-card"><div class="tariff-weight">от 5 кг</div><div class="tariff-price">2100 <small>тг</small></div></div>
-      <div class="tariff-card"><div class="tariff-weight">от 10 кг</div><div class="tariff-price">2050 <small>тг</small></div></div>
-      <div class="tariff-card"><div class="tariff-weight">от 20 кг</div><div class="tariff-price">2000 <small>тг</small></div></div>
+      <div class="tariff-card"><div class="tariff-weight" data-i18n="tariffW1">от 100 г</div><div class="tariff-price">2150 <small>тг</small></div></div>
+      <div class="tariff-card"><div class="tariff-weight" data-i18n="tariffW2">от 5 кг</div><div class="tariff-price">2100 <small>тг</small></div></div>
+      <div class="tariff-card"><div class="tariff-weight" data-i18n="tariffW3">от 10 кг</div><div class="tariff-price">2050 <small>тг</small></div></div>
+      <div class="tariff-card"><div class="tariff-weight" data-i18n="tariffW4">от 20 кг</div><div class="tariff-price">2000 <small>тг</small></div></div>
     </div>
-    <div class="oversize-card"><h4>🚛 Негабаритный груз</h4><p class="price">2350 тг/кг <span style="font-size:0.9rem;">+ 2500 тг перегруз</span></p></div>
+    <div class="oversize-card"><h4 data-i18n="oversizeTitle">🚛 Негабаритный груз</h4><p class="price">2350 тг/кг <span style="font-size:0.9rem;" data-i18n="oversizeExtra">+ 2500 тг перегруз</span></p></div>
+  </section>
+
+  <section class="calc-section fade-up" id="calculator">
+    <div class="section-title">
+      <h2 data-i18n="calcTitle">🧮 Калькулятор доставки</h2>
+      <p data-i18n="calcDesc">Узнайте примерную стоимость доставки по весу посылки</p>
+    </div>
+    <div class="calc-card">
+      <div class="rate-row">
+        <span class="rate-icon">💱</span>
+        <span>1 CNY ≈ <span class="rate-value" id="rateValue">…</span> KZT</span>
+        <span class="rate-updated" id="rateUpdated"></span>
+      </div>
+      <div class="calc-field">
+        <label for="weightInput" data-i18n="weightLabel">Вес посылки, кг</label>
+        <input type="number" id="weightInput" min="0.1" step="0.1" placeholder="Например, 3.5" data-i18n-placeholder="weightPlaceholder">
+      </div>
+      <button class="btn btn-primary analyze-btn" id="calcBtn" data-i18n="calcBtnText">Рассчитать стоимость</button>
+      <div class="calc-result" id="calcResult">
+        <div class="calc-total" id="calcTotal"></div>
+        <div class="calc-sub" id="calcSub"></div>
+        <div class="calc-cny" id="calcCny"></div>
+      </div>
+
+      <div class="calc-divider" data-i18n="orText">или</div>
+
+      <div class="calc-field">
+        <label for="priceInput" data-i18n="priceLabel">Цена товара, CNY (юань)</label>
+        <input type="number" id="priceInput" min="0.1" step="0.1" placeholder="Например, 71" data-i18n-placeholder="pricePlaceholder">
+      </div>
+      <button class="btn btn-outline analyze-btn" id="priceBtn" data-i18n="priceBtnText">Перевести в тенге</button>
+      <div class="calc-result" id="priceResult">
+        <div class="calc-total" id="priceTotal"></div>
+        <div class="calc-sub" id="priceSub"></div>
+      </div>
+    </div>
   </section>
 
   <section class="info-section fade-up">
-    <div class="section-title"><h2>Почему выбирают нас</h2></div>
+    <div class="section-title"><h2 data-i18n="infoTitle">Почему выбирают нас</h2></div>
     <div class="info-grid">
-      <div class="info-item"><div class="info-icon">⏱️</div><div><strong>Доставка от 8 дней</strong><br>Быстрая логистика</div></div>
-      <div class="info-item"><div class="info-icon">⚖️</div><div><strong>Фактический вес</strong><br>Без округлений</div></div>
-      <div class="info-item"><div class="info-icon">🚚</div><div><strong>Бесплатная доставка</strong><br>По Булаево от 3 кг</div></div>
-      <div class="info-item"><div class="info-icon">📍</div><div><strong>Самовывоз</strong><br>ул. Целинная 30, 10–20</div></div>
+      <div class="info-item"><div class="info-icon">⏱️</div><div data-i18n-html="info1"><strong>Доставка от 8 дней</strong><br>Быстрая логистика</div></div>
+      <div class="info-item"><div class="info-icon">⚖️</div><div data-i18n-html="info2"><strong>Фактический вес</strong><br>Без округлений</div></div>
+      <div class="info-item"><div class="info-icon">🚚</div><div data-i18n-html="info3"><strong>Бесплатная доставка</strong><br>По Булаево от 3 кг</div></div>
+      <div class="info-item"><div class="info-icon">📍</div><div data-i18n-html="info4"><strong>Самовывоз</strong><br>ул. Целинная 30, 10–20</div></div>
     </div>
   </section>
 
   <section class="gallery-section fade-up">
-    <div class="section-title"><h2>Фото и видео</h2><p>Посылки, склад, оплата и другие материалы</p></div>
+    <div class="section-title"><h2 data-i18n="galleryTitle">Фото и видео</h2><p data-i18n="galleryDesc">Посылки, склад, оплата и другие материалы</p></div>
     <div class="gallery-grid">
       <div class="gallery-item">📷</div>
       <div class="gallery-item">🏭</div>
@@ -199,51 +288,180 @@
   </section>
 
   <section class="tutorials-section fade-up" id="tutorials">
-    <div class="section-title"><h2>Как это работает</h2><p>Простые видеоинструкции для вашего удобства</p></div>
+    <div class="section-title"><h2 data-i18n="tutorialsTitle">Как это работает</h2><p data-i18n="tutorialsDesc">Простые видеоинструкции для вашего удобства</p></div>
     <div class="tutorial-grid">
       <div class="tutorial-card">
-        <h3>🏠 Адрес для заказов</h3>
+        <h3 data-i18n="tut1Title">🏠 Адрес для заказов</h3>
         <iframe src="https://www.youtube.com/embed/R9tOwPetH7M" style="width:100%; aspect-ratio:16/9; border-radius:12px; margin-bottom:1rem;" allowfullscreen></iframe>
         <div class="address-lines">
-          <div class="address-row"><span>低调NORD 001</span><button class="copy-btn" data-copy="低调NORD 001">📋 Копировать</button></div>
-          <div class="address-row"><span>18957788787</span><button class="copy-btn" data-copy="18957788787">📋 Копировать</button></div>
-          <div class="address-row"><span>浙江省 金华市 义乌市</span><button class="copy-btn" data-copy="浙江省 金华市 义乌市">📋 Копировать</button></div>
-          <div class="address-row"><span>福田街道 龙岗路一街6号 8787库房 (低调NORD)</span><button class="copy-btn" data-copy="福田街道 龙岗路一街6号 8787库房 (低调NORD)">📋 Копировать</button></div>
+          <div class="address-row"><span>低调NORD 001</span><button class="copy-btn" data-copy="低调NORD 001" data-i18n="copyBtnText">📋 Копировать</button></div>
+          <div class="address-row"><span>18957788787</span><button class="copy-btn" data-copy="18957788787" data-i18n="copyBtnText">📋 Копировать</button></div>
+          <div class="address-row"><span>浙江省 金华市 义乌市</span><button class="copy-btn" data-copy="浙江省 金华市 义乌市" data-i18n="copyBtnText">📋 Копировать</button></div>
+          <div class="address-row"><span>福田街道 龙岗路一街6号 8787库房 (低调NORD)</span><button class="copy-btn" data-copy="福田街道 龙岗路一街6号 8787库房 (低调NORD)" data-i18n="copyBtnText">📋 Копировать</button></div>
         </div>
-        <div class="reminder">⚠️ Личный код (XXXX 22) обязателен! Узнайте свой код у менеджера.</div>
+        <div class="reminder" data-i18n="reminderText">⚠️ Личный код (XXXX 22) обязателен! Узнайте свой код у менеджера.</div>
       </div>
-      <div class="tutorial-card"><h3>💳 Как привязать карту</h3><div style="background:#111; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;">🎬 Видео скоро</div></div>
-      <div class="tutorial-card"><h3>🔍 Как отследить посылку</h3><iframe src="https://www.youtube.com/embed/PRontztzV80" style="width:100%; aspect-ratio:16/9; border-radius:12px;" allowfullscreen></iframe></div>
+      <div class="tutorial-card"><h3 data-i18n="tut2Title">💳 Как привязать карту</h3><div style="background:#111; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;" data-i18n="videoSoon">🎬 Видео скоро</div></div>
+      <div class="tutorial-card"><h3 data-i18n="tut3Title">🔍 Как отследить посылку</h3><iframe src="https://www.youtube.com/embed/PRontztzV80" style="width:100%; aspect-ratio:16/9; border-radius:12px;" allowfullscreen></iframe></div>
     </div>
   </section>
 
   <section class="contacts-section fade-up" id="contacts">
-    <div class="section-title"><h2>Свяжитесь с нами</h2></div>
+    <div class="section-title"><h2 data-i18n="contactsTitle">Свяжитесь с нами</h2></div>
     <div class="contact-buttons">
       <a href="https://wa.me/77773363666" class="btn btn-primary">💬 WhatsApp</a>
       <a href="https://t.me/TimCargoBot" class="btn btn-outline">✈️ Telegram</a>
-      <a href="tel:+77773363666" class="btn btn-outline">📞 Позвонить</a>
+      <a href="tel:+77773363666" class="btn btn-outline" data-i18n="callBtn">📞 Позвонить</a>
     </div>
     <div class="contact-card">
-      <p><strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30</p>
-      <p><strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00</p>
-      <button class="btn btn-outline btn-small" id="mapBtn" style="margin-top:1rem;">🗺️ Открыть карту</button>
+      <p data-i18n-html="contactAddress"><strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30</p>
+      <p data-i18n-html="contactSchedule"><strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00</p>
+      <button class="btn btn-outline btn-small" id="mapBtn" style="margin-top:1rem;" data-i18n="mapBtnText">🗺️ Открыть карту</button>
     </div>
   </section>
 
   <section class="faq-section fade-up">
-    <div class="section-title"><h2>Часто спрашивают</h2></div>
-    <div class="faq-item"><button class="faq-question">⚖️ Как считается вес? <span class="faq-icon">+</span></button><div class="faq-answer">Взвешиваем от 100 грамм, фактический вес.</div></div>
-    <div class="faq-item"><button class="faq-question">⏳ Сколько идет доставка? <span class="faq-icon">+</span></button><div class="faq-answer">8–14 дней из Китая в Булаево.</div></div>
-    <div class="faq-item"><button class="faq-question">📦 Как получить посылку? <span class="faq-icon">+</span></button><div class="faq-answer">Самовывоз или доставка от 3 кг.</div></div>
+    <div class="section-title"><h2 data-i18n="faqTitle">Часто спрашивают</h2></div>
+    <div class="faq-item"><button class="faq-question"><span data-i18n="faq1Q">⚖️ Как считается вес?</span> <span class="faq-icon">+</span></button><div class="faq-answer" data-i18n="faq1A">Взвешиваем от 100 грамм, фактический вес.</div></div>
+    <div class="faq-item"><button class="faq-question"><span data-i18n="faq2Q">⏳ Сколько идет доставка?</span> <span class="faq-icon">+</span></button><div class="faq-answer" data-i18n="faq2A">8–14 дней из Китая в Булаево.</div></div>
+    <div class="faq-item"><button class="faq-question"><span data-i18n="faq3Q">📦 Как получить посылку?</span> <span class="faq-icon">+</span></button><div class="faq-answer" data-i18n="faq3A">Самовывоз или доставка от 3 кг.</div></div>
   </section>
 </main>
 
-<footer class="footer"><div class="container"><p>TimCargo Булаево — Доставка из Китая</p><p>© 2026</p></div></footer>
-<div class="sticky-contact" id="stickyContactBtn"><a href="#contacts" class="btn btn-primary">💬 Связаться</a></div>
+<footer class="footer"><div class="container"><p data-i18n="footerText">TimCargo Булаево — Доставка из Китая</p><p>© 2026</p></div></footer>
+<div class="sticky-contact" id="stickyContactBtn"><a href="#contacts" class="btn btn-primary" data-i18n="btnContact">💬 Связаться</a></div>
 
 <script>
 (function () {
+  // ═══════════════════════════════════════════════════
+  // ПЕРЕВОД САЙТА (RU / KK)
+  // ═══════════════════════════════════════════════════
+
+  let currentLang = 'ru';
+
+  const translations = {
+    ru: {
+      heroTitle: 'Карго доставка <br><span class="highlight">из Китая</span>',
+      heroTagline: 'Ваши покупки — наша забота',
+      heroFeat1: 'Быстро', heroFeat2: 'Надёжно', heroFeat3: 'По факту веса',
+      btnContact: '💬 Связаться', btnShare: '🔗 Поделиться сайтом',
+      qrCaption: 'Отсканируйте, чтобы открыть сайт',
+      tariffsTitle: 'Тарифы на доставку',
+      tariffsDesc: 'Прозрачные цены без скрытых платежей. Оплата только за фактический вес.',
+      tariffW1: 'от 100 г', tariffW2: 'от 5 кг', tariffW3: 'от 10 кг', tariffW4: 'от 20 кг',
+      oversizeTitle: '🚛 Негабаритный груз', oversizeExtra: '+ 2500 тг перегруз',
+      calcTitle: '🧮 Калькулятор доставки',
+      calcDesc: 'Узнайте примерную стоимость доставки по весу посылки',
+      weightLabel: 'Вес посылки, кг', weightPlaceholder: 'Например, 3.5',
+      calcBtnText: 'Рассчитать стоимость', orText: 'или',
+      priceLabel: 'Цена товара, CNY (юань)', pricePlaceholder: 'Например, 71',
+      priceBtnText: 'Перевести в тенге',
+      infoTitle: 'Почему выбирают нас',
+      info1: '<strong>Доставка от 8 дней</strong><br>Быстрая логистика',
+      info2: '<strong>Фактический вес</strong><br>Без округлений',
+      info3: '<strong>Бесплатная доставка</strong><br>По Булаево от 3 кг',
+      info4: '<strong>Самовывоз</strong><br>ул. Целинная 30, 10–20',
+      galleryTitle: 'Фото и видео', galleryDesc: 'Посылки, склад, оплата и другие материалы',
+      tutorialsTitle: 'Как это работает', tutorialsDesc: 'Простые видеоинструкции для вашего удобства',
+      tut1Title: '🏠 Адрес для заказов',
+      copyBtnText: '📋 Копировать', copiedText: '✅ Скопировано',
+      reminderText: '⚠️ Личный код (XXXX 22) обязателен! Узнайте свой код у менеджера.',
+      tut2Title: '💳 Как привязать карту', videoSoon: '🎬 Видео скоро',
+      tut3Title: '🔍 Как отследить посылку',
+      contactsTitle: 'Свяжитесь с нами', callBtn: '📞 Позвонить',
+      contactAddress: '<strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30',
+      contactSchedule: '<strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00',
+      mapBtnText: '🗺️ Открыть карту',
+      faqTitle: 'Часто спрашивают',
+      faq1Q: '⚖️ Как считается вес?', faq1A: 'Взвешиваем от 100 грамм, фактический вес.',
+      faq2Q: '⏳ Сколько идет доставка?', faq2A: '8–14 дней из Китая в Булаево.',
+      faq3Q: '📦 Как получить посылку?', faq3A: 'Самовывоз или доставка от 3 кг.',
+      footerText: 'TimCargo Булаево — Доставка из Китая',
+      unitKg: 'кг', perKgUnit: 'тг/кг',
+      cnyApproxLabel: '≈ {v} CNY по текущему курсу',
+      rateTodayLabel: 'курс на сегодня',
+      rateOnDate: 'Курс на {d}', rateLoadError: 'Не удалось загрузить курс',
+      alertWeight: 'Введите вес посылки в кг',
+      alertPrice: 'Введите цену товара в юанях',
+      alertRateLoading: 'Курс ещё загружается, попробуйте через пару секунд',
+      alertCopyFail: 'Не удалось скопировать'
+    },
+    kk: {
+      heroTitle: 'Карго жеткізу <br><span class="highlight">Қытайдан</span>',
+      heroTagline: 'Сіздің тапсырысыңыз — біздің қамқорлығымыз',
+      heroFeat1: 'Жылдам', heroFeat2: 'Сенімді', heroFeat3: 'Нақты салмақ бойынша',
+      btnContact: '💬 Байланысу', btnShare: '🔗 Сайтпен бөлісу',
+      qrCaption: 'Сайтты ашу үшін сканерлеңіз',
+      tariffsTitle: 'Жеткізу тарифтары',
+      tariffsDesc: 'Жасырын төлемдерсіз ашық бағалар. Тек нақты салмақ бойынша төлем.',
+      tariffW1: '100 г-нан', tariffW2: '5 кг-нан', tariffW3: '10 кг-нан', tariffW4: '20 кг-нан',
+      oversizeTitle: '🚛 Негабарит жүк', oversizeExtra: '+ 2500 тг артық салмақ',
+      calcTitle: '🧮 Жеткізу калькуляторы',
+      calcDesc: 'Салмағы бойынша жеткізу құнын біліңіз',
+      weightLabel: 'Жүктің салмағы, кг', weightPlaceholder: 'Мысалы, 3.5',
+      calcBtnText: 'Құнын есептеу', orText: 'немесе',
+      priceLabel: 'Тауар бағасы, CNY (юань)', pricePlaceholder: 'Мысалы, 71',
+      priceBtnText: 'Теңгеге аудару',
+      infoTitle: 'Неге бізді таңдайды',
+      info1: '<strong>8 күннен бастап жеткізу</strong><br>Жылдам логистика',
+      info2: '<strong>Нақты салмақ</strong><br>Дөңгелектеусіз',
+      info3: '<strong>Тегін жеткізу</strong><br>Булаево бойынша 3 кг-нан',
+      info4: '<strong>Өзі алып кету</strong><br>Целинная көш. 30, 10–20',
+      galleryTitle: 'Фото және видео', galleryDesc: 'Сәлемдемелер, қойма, төлем және басқа материалдар',
+      tutorialsTitle: 'Бұл қалай жұмыс істейді', tutorialsDesc: 'Ыңғайлылығыңыз үшін қарапайым бейне нұсқаулықтар',
+      tut1Title: '🏠 Тапсырыс мекенжайы',
+      copyBtnText: '📋 Көшіру', copiedText: '✅ Көшірілді',
+      reminderText: '⚠️ Жеке код (XXXX 22) міндетті! Кодыңызды менеджерден біліңіз.',
+      tut2Title: '💳 Картаны қалай байлау керек', videoSoon: '🎬 Бейне жақында',
+      tut3Title: '🔍 Сәлемдемені қалай бақылау керек',
+      contactsTitle: 'Бізбен байланысыңыз', callBtn: '📞 Қоңырау шалу',
+      contactAddress: '<strong>📍 Мекенжай:</strong> Булаево қ., Целинная көш., 30',
+      contactSchedule: '<strong>🕙 Жұмыс кестесі:</strong> Күн сайын 10:00 – 20:00',
+      mapBtnText: '🗺️ Картаны ашу',
+      faqTitle: 'Жиі қойылатын сұрақтар',
+      faq1Q: '⚖️ Салмақ қалай есептеледі?', faq1A: '100 граммнан бастап, нақты салмақ бойынша өлшейміз.',
+      faq2Q: '⏳ Жеткізу қанша уақыт алады?', faq2A: 'Қытайдан Булаевоға дейін 8–14 күн.',
+      faq3Q: '📦 Сәлемдемені қалай алуға болады?', faq3A: 'Өзі алып кету немесе 3 кг-нан жеткізу.',
+      footerText: 'TimCargo Булаево — Қытайдан жеткізу',
+      unitKg: 'кг', perKgUnit: 'тг/кг',
+      cnyApproxLabel: '≈ {v} CNY ағымдағы курс бойынша',
+      rateTodayLabel: 'бүгінгі курс',
+      rateOnDate: '{d} күнгі курс', rateLoadError: 'Курсты жүктеу мүмкін болмады',
+      alertWeight: 'Жүктің салмағын кг-мен енгізіңіз',
+      alertPrice: 'Тауардың бағасын юаньмен енгізіңіз',
+      alertRateLoading: 'Курс жүктелуде, бірнеше секундтан кейін қайталап көріңіз',
+      alertCopyFail: 'Көшіру мүмкін болмады'
+    }
+  };
+
+  function applyLang(lang) {
+    if (!translations[lang]) lang = 'ru';
+    currentLang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang][key] !== undefined) el.textContent = translations[lang][key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (translations[lang][key] !== undefined) el.innerHTML = translations[lang][key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (translations[lang][key] !== undefined) el.placeholder = translations[lang][key];
+    });
+    document.documentElement.lang = lang === 'kk' ? 'kk' : 'ru';
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
+    try { localStorage.setItem('timcargo_lang', lang); } catch (e) {}
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.getAttribute('data-lang')));
+  });
+
+  let savedLang = 'ru';
+  try { savedLang = localStorage.getItem('timcargo_lang') || 'ru'; } catch (e) {}
+  applyLang(savedLang);
+
   // ── Анимация появления ──
   const fades = document.querySelectorAll('.fade-up');
   const obs = new IntersectionObserver(entries =>
@@ -286,9 +504,9 @@
     btn.addEventListener('click', () => {
       const txt = btn.getAttribute('data-copy');
       if (copyText(txt)) {
-        btn.innerHTML = '✅ Скопировано'; btn.style.background = 'var(--red-accent)'; btn.style.color = 'white';
-        setTimeout(() => { btn.innerHTML = '📋 Копировать'; btn.style.background = 'transparent'; btn.style.color = 'var(--red-accent)'; }, 1500);
-      } else { alert('Не удалось скопировать'); }
+        btn.innerHTML = translations[currentLang].copiedText; btn.style.background = 'var(--red-accent)'; btn.style.color = 'white';
+        setTimeout(() => { btn.innerHTML = translations[currentLang].copyBtnText; btn.style.background = 'transparent'; btn.style.color = 'var(--red-accent)'; }, 1500);
+      } else { alert(translations[currentLang].alertCopyFail); }
     });
   });
 
@@ -300,6 +518,130 @@
       item.classList.toggle('open');
     });
   });
+
+  // ═══════════════════════════════════════════════════
+  // КУРС ВАЛЮТ (CNY → KZT), обновляется раз в сутки
+  // ═══════════════════════════════════════════════════
+
+  const RATE_CACHE_KEY = 'timcargo_cny_kzt_rate';
+  const rateValueEl   = document.getElementById('rateValue');
+  const rateUpdatedEl = document.getElementById('rateUpdated');
+  let currentRate = null;
+
+  function todayStr() {
+    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  }
+
+  function showRate(rate, dateStr) {
+    currentRate = rate;
+    rateValueEl.textContent = rate.toFixed(2);
+    if (rateUpdatedEl) rateUpdatedEl.textContent = translations[currentLang].rateOnDate.replace('{d}', dateStr);
+  }
+
+  async function loadRate() {
+    // Пытаемся использовать кэш, если он уже сегодняшний
+    try {
+      const cached = JSON.parse(localStorage.getItem(RATE_CACHE_KEY) || 'null');
+      if (cached && cached.date === todayStr() && cached.rate) {
+        showRate(cached.rate, cached.date);
+        return;
+      }
+    } catch (e) {}
+
+    try {
+      const res = await fetch('https://open.er-api.com/v6/latest/CNY');
+      const data = await res.json();
+      const rate = data && data.rates && data.rates.KZT;
+      if (!rate) throw new Error('Нет данных по KZT');
+
+      const date = todayStr();
+      showRate(rate, date);
+      try { localStorage.setItem(RATE_CACHE_KEY, JSON.stringify({ date, rate })); } catch (e) {}
+    } catch (e) {
+      // Если запрос не удался — пробуем показать последний известный курс из кэша
+      try {
+        const cached = JSON.parse(localStorage.getItem(RATE_CACHE_KEY) || 'null');
+        if (cached && cached.rate) { showRate(cached.rate, cached.date + ' (кэш)'); return; }
+      } catch (e2) {}
+      rateValueEl.textContent = '—';
+      if (rateUpdatedEl) rateUpdatedEl.textContent = translations[currentLang].rateLoadError;
+    }
+  }
+
+  loadRate();
+
+  // ═══════════════════════════════════════════════════
+  // КАЛЬКУЛЯТОР СТОИМОСТИ ДОСТАВКИ
+  // ═══════════════════════════════════════════════════
+
+  const weightInput = document.getElementById('weightInput');
+  const calcBtn      = document.getElementById('calcBtn');
+  const calcResult   = document.getElementById('calcResult');
+  const calcTotal    = document.getElementById('calcTotal');
+  const calcSub      = document.getElementById('calcSub');
+  const calcCny      = document.getElementById('calcCny');
+
+  // Тарифная сетка сайта (тг/кг по фактическому весу)
+  function ratePerKg(weight) {
+    if (weight >= 20) return 2000;
+    if (weight >= 10) return 2050;
+    if (weight >= 5)  return 2100;
+    return 2150; // от 100 г
+  }
+
+  function calculate() {
+    const weight = parseFloat(weightInput.value);
+    if (!weight || weight <= 0) {
+      alert(translations[currentLang].alertWeight);
+      return;
+    }
+
+    const perKg = ratePerKg(weight);
+    const total = Math.round(weight * perKg);
+    const t = translations[currentLang];
+
+    calcTotal.textContent = `${total.toLocaleString('ru-RU')} тг`;
+    calcSub.textContent = `${weight} ${t.unitKg} × ${perKg} ${t.perKgUnit}`;
+
+    if (currentRate) {
+      const totalCny = (total / currentRate).toFixed(1);
+      calcCny.textContent = t.cnyApproxLabel.replace('{v}', totalCny);
+    } else {
+      calcCny.textContent = '';
+    }
+
+    calcResult.style.display = 'block';
+  }
+
+  calcBtn.addEventListener('click', calculate);
+  weightInput.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+
+  // ── Простой перевод цены товара CNY → KZT ──
+  const priceInput  = document.getElementById('priceInput');
+  const priceBtn    = document.getElementById('priceBtn');
+  const priceResult = document.getElementById('priceResult');
+  const priceTotal  = document.getElementById('priceTotal');
+  const priceSub    = document.getElementById('priceSub');
+
+  function convertPrice() {
+    const cny = parseFloat(priceInput.value);
+    const t = translations[currentLang];
+    if (!cny || cny <= 0) {
+      alert(t.alertPrice);
+      return;
+    }
+    if (!currentRate) {
+      alert(t.alertRateLoading);
+      return;
+    }
+    const kzt = Math.round(cny * currentRate);
+    priceTotal.textContent = `${kzt.toLocaleString('ru-RU')} тг`;
+    priceSub.textContent = `${cny} CNY × ${currentRate.toFixed(2)} (${t.rateTodayLabel})`;
+    priceResult.style.display = 'block';
+  }
+
+  priceBtn.addEventListener('click', convertPrice);
+  priceInput.addEventListener('keydown', e => { if (e.key === 'Enter') convertPrice(); });
 })();
 </script>
 </body>
