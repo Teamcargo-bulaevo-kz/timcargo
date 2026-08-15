@@ -9,7 +9,6 @@
   <meta name="theme-color" content="#0a0a0a">
   <title>TimCargo Булаево | Карго-доставка из Китая</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
-  <!-- Tesseract удалён — используем Claude Vision API -->
   <style>
     :root {
       --bg-primary: #0a0a0a;
@@ -118,56 +117,6 @@
     .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
     .gallery-item:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
 
-    /* ===== БЛОК ПРОВЕРКИ АДРЕСА ===== */
-    .address-check-section { padding: 2.5rem 0; }
-    .check-card {
-      background: var(--bg-card); border: 1px solid var(--border-color);
-      border-radius: var(--radius-md); padding: 2rem; max-width: 700px;
-      margin: 0 auto; transition: var(--transition-smooth);
-    }
-    .check-card:hover { border-color: var(--red-accent); box-shadow: var(--shadow-glow); }
-
-    /* FIX 1: нет JS-обработчика на label, используем нативный for= */
-    .file-upload-area { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .file-label {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--bg-secondary); border: 1px dashed var(--red-accent);
-      border-radius: 40px; padding: 0.8rem 1.5rem;
-      cursor: pointer; transition: 0.2s; user-select: none;
-    }
-    .file-label:hover { background: rgba(232,17,45,0.1); }
-    .file-name {
-      font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;
-    }
-    .preview-img {
-      margin-top: 0.5rem; max-width: 100%; max-height: 200px;
-      border-radius: 12px; border: 1px solid var(--border-color); display: none;
-    }
-    .analyze-btn { width: 100%; margin-top: 1rem; }
-    .result-box {
-      margin-top: 1.5rem; padding: 1.2rem; background: var(--bg-secondary);
-      border-radius: var(--radius-sm); border-left: 3px solid var(--red-accent);
-      color: var(--text-secondary); font-size: 0.95rem; display: none;
-    }
-    .result-box.ok { border-color: #22c55e; }
-    .result-box.err { border-color: var(--red-accent); }
-
-    /* Прогресс OCR */
-    .ocr-progress-wrap {
-      display: none; margin-top: 1rem;
-      background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 1rem;
-    }
-    .ocr-progress-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
-    .ocr-progress-bar-bg { background: var(--border-color); border-radius: 99px; height: 6px; overflow: hidden; }
-    .ocr-progress-bar { height: 100%; width: 0%; background: var(--red-accent); border-radius: 99px; transition: width 0.3s; }
-
-    .result-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-family: monospace; font-size: 0.9rem; }
-    .result-row .icon { font-size: 1rem; flex-shrink: 0; }
-    .result-verdict { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
-
-    .loader { display: inline-block; width: 18px; height: 18px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-right: 8px; vertical-align: middle; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
     .tutorials-section { padding: 2.5rem 0; }
     .tutorial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
     .tutorial-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; transition: var(--transition-smooth); }
@@ -190,29 +139,6 @@
     .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 1.2rem; }
     .footer { text-align: center; padding: 2.5rem 0 2rem; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem; }
     @media (max-width: 600px) { .btn { width: 100%; justify-content: center; } .hero-buttons { flex-direction: column; } .tariff-grid { grid-template-columns: 1fr 1fr; } }
-
-    /* ── Блок личного кода ── */
-    .mycode-section { padding: 2.5rem 0; }
-    .mycode-card {
-      background: linear-gradient(145deg, #1a0d10, #1a1a1a);
-      border: 1px solid var(--red-accent);
-      border-radius: var(--radius-md);
-      padding: 2rem;
-      max-width: 500px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .mycode-label { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.8rem; }
-    .mycode-value {
-      font-size: 3rem; font-weight: 800; letter-spacing: 4px;
-      color: var(--red-accent); text-shadow: 0 0 20px var(--red-glow);
-      margin: 0.5rem 0 1.2rem; font-family: monospace;
-      min-height: 3.5rem; display: flex; align-items: center; justify-content: center;
-    }
-    .mycode-value .code-loader { font-size: 1.2rem; letter-spacing: 0; color: var(--text-muted); font-weight: 400; }
-    .mycode-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .mycode-hint { margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); }
-    .mycode-hint strong { color: var(--text-secondary); }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -272,34 +198,6 @@
     </div>
   </section>
 
-  <!-- ===== БЛОК ПРОВЕРКИ АДРЕСА ===== -->
-  <section class="address-check-section fade-up" id="addressCheck">
-    <div class="section-title">
-      <h2>📸 Проверка адреса</h2>
-      <p>Загрузите скриншот из Pinduoduo — проверим, правильно ли указан адрес склада</p>
-    </div>
-    <div class="check-card">
-
-      <!-- FIX 1: label с for= без JS — нативное открытие файла на iOS и Android -->
-      <div class="file-upload-area">
-        <label class="file-label" for="screenshotInput">📂 Выбрать скриншот</label>
-        <input type="file" id="screenshotInput" accept="image/*" style="display:none;" aria-label="Выбор скриншота">
-        <div class="file-name" id="fileName">Файл не выбран</div>
-        <!-- FIX 3: предпросмотр сбрасывается при каждом новом выборе файла -->
-        <img id="previewImage" class="preview-img" alt="Предпросмотр скриншота">
-      </div>
-
-      <!-- Прогресс анализа через Claude Vision API -->
-      <div class="ocr-progress-wrap" id="ocrProgressWrap">
-        <div class="ocr-progress-label" id="ocrProgressLabel">Отправляю на анализ...</div>
-        <div class="ocr-progress-bar-bg"><div class="ocr-progress-bar" id="ocrProgressBar"></div></div>
-      </div>
-
-      <button id="analyzeBtn" class="btn btn-primary analyze-btn">🔍 Проверить адрес</button>
-      <div id="resultArea" class="result-box"></div>
-    </div>
-  </section>
-
   <section class="tutorials-section fade-up" id="tutorials">
     <div class="section-title"><h2>Как это работает</h2><p>Простые видеоинструкции для вашего удобства</p></div>
     <div class="tutorial-grid">
@@ -312,30 +210,10 @@
           <div class="address-row"><span>浙江省 金华市 义乌市</span><button class="copy-btn" data-copy="浙江省 金华市 义乌市">📋 Копировать</button></div>
           <div class="address-row"><span>福田街道 龙岗路一街6号 8787库房 (低调NORD)</span><button class="copy-btn" data-copy="福田街道 龙岗路一街6号 8787库房 (低调NORD)">📋 Копировать</button></div>
         </div>
-        <div class="reminder">⚠️ Личный код (XXXX 22) обязателен! После настройки напишите менеджеру.</div>
+        <div class="reminder">⚠️ Личный код (XXXX 22) обязателен! Узнайте свой код у менеджера.</div>
       </div>
       <div class="tutorial-card"><h3>💳 Как привязать карту</h3><div style="background:#111; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;">🎬 Видео скоро</div></div>
       <div class="tutorial-card"><h3>🔍 Как отследить посылку</h3><iframe src="https://www.youtube.com/embed/PRontztzV80" style="width:100%; aspect-ratio:16/9; border-radius:12px;" allowfullscreen></iframe></div>
-    </div>
-  </section>
-
-  <!-- ── БЛОК ЛИЧНОГО КОДА ── -->
-  <section class="mycode-section fade-up" id="mycode">
-    <div class="section-title">
-      <h2>🔑 Ваш личный код</h2>
-      <p>Этот код нужно вписать в поле имени получателя при оформлении заказа на Pinduoduo</p>
-    </div>
-    <div class="mycode-card">
-      <div class="mycode-label">Ваш персональный код для заказов:</div>
-      <div class="mycode-value" id="mycodeValue"><span class="code-loader">⏳ Загружаю...</span></div>
-      <div class="mycode-actions">
-        <button class="btn btn-primary btn-small" id="copyCodeBtn">📋 Скопировать код</button>
-        <button class="btn btn-outline btn-small" id="refreshCodeBtn">🔄 Новый код</button>
-      </div>
-      <div class="mycode-hint">
-        Вставьте код в поле <strong>«Имя получателя»</strong> именно в таком формате.<br>
-        Пример: <strong>低调NORD <span id="mycodeInline">...</span></strong>
-      </div>
     </div>
   </section>
 
@@ -422,213 +300,6 @@
       item.classList.toggle('open');
     });
   });
-
-  // ═══════════════════════════════════════════════════
-  // БЛОК ПРОВЕРКИ АДРЕСА
-  // ═══════════════════════════════════════════════════
-
-  const screenshotInput = document.getElementById('screenshotInput');
-  const previewImg      = document.getElementById('previewImage');
-  const fileNameEl      = document.getElementById('fileName');
-  const analyzeBtn      = document.getElementById('analyzeBtn');
-  const resultArea      = document.getElementById('resultArea');
-  const progressWrap    = document.getElementById('ocrProgressWrap');
-  const progressBar     = document.getElementById('ocrProgressBar');
-  const progressLabel   = document.getElementById('ocrProgressLabel');
-
-  // Части адреса, которые должны быть на скриншоте
-  const expectedParts = [
-    { text: '浙江省',      label: 'Провинция 浙江省' },
-    { text: '金华市',      label: 'Город 金华市' },
-    { text: '义乌市',      label: 'Район 义乌市' },
-    { text: '福田街道',    label: 'Улица 福田街道' },
-    { text: '龙岗路一街6号', label: 'Дом 龙岗路一街6号' },
-    { text: '8787库房',    label: 'Склад 8787库房' },
-  ];
-
-  // FIX 1: label уже привязан через for="screenshotInput" — JS не нужен
-  // FIX 3: сбрасываем состояние при каждом выборе нового файла
-  screenshotInput.addEventListener('change', function (e) {
-    const file = e.target.files[0];
-
-    // Сбрасываем результат и прогресс при новом выборе файла
-    resultArea.style.display   = 'none';
-    resultArea.className       = 'result-box';
-    resultArea.innerHTML       = '';
-    progressWrap.style.display = 'none';
-    progressBar.style.width    = '0%';
-
-    if (file) {
-      fileNameEl.textContent = file.name;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        previewImg.src         = ev.target.result;
-        previewImg.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-    } else {
-      fileNameEl.textContent   = 'Файл не выбран';
-      previewImg.style.display = 'none';
-    }
-  });
-
-  analyzeBtn.addEventListener('click', async function () {
-    const file = screenshotInput.files[0];
-    if (!file) { alert('Сначала выберите скриншот'); return; }
-
-    analyzeBtn.disabled        = true;
-    analyzeBtn.innerHTML       = '<span class="loader"></span> Анализирую...';
-    resultArea.style.display   = 'none';
-    resultArea.innerHTML       = '';
-    progressWrap.style.display = 'block';
-    progressBar.style.width    = '30%';
-    progressLabel.textContent  = '📤 Отправляю скриншот на анализ...';
-
-    try {
-      // Конвертируем файл в base64
-      const base64 = await fileToBase64(file);
-      const mediaType = file.type || 'image/jpeg';
-
-      progressBar.style.width  = '55%';
-      progressLabel.textContent = '🤖 ИИ читает адрес...';
-
-      // Запрос идёт на Cloudflare Worker (прокси), а не напрямую в Anthropic
-      const WORKER_URL = 'https://code-generator.lazyshadow777.workers.dev';
-
-      const response = await fetch(`${WORKER_URL}/api/claude`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image_base64: base64, media_type: mediaType })
-      });
-
-      progressBar.style.width  = '85%';
-      progressLabel.textContent = '📊 Обрабатываю результат...';
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Ошибка сервера');
-      }
-
-      const result = await response.json();
-      if (result.error) throw new Error(result.error);
-
-      progressBar.style.width  = '100%';
-      progressLabel.textContent = '✅ Готово';
-
-      // Строим красивый результат
-      const allOk = result.allCorrect;
-      let html = `<div class="result-verdict">${allOk ? '✅ Адрес указан верно!' : '❌ Адрес указан неверно'}</div>`;
-
-      // Найденные части
-      (result.found || []).forEach(part => {
-        const label = expectedParts.find(p => p.text === part)?.label || part;
-        html += `<div class="result-row"><span class="icon">✅</span><span>${label}</span></div>`;
-      });
-      // Отсутствующие части
-      (result.missing || []).forEach(part => {
-        const label = expectedParts.find(p => p.text === part)?.label || part;
-        html += `<div class="result-row"><span class="icon">❌</span><span>${label} — <strong>не найдено</strong></span></div>`;
-      });
-
-      // Личный код
-      html += `<br>`;
-      if (result.hasPersonalCode) {
-        html += `<div class="result-row"><span class="icon">✅</span><span>Личный код найден: <strong>${result.personalCode}</strong></span></div>`;
-      } else {
-        html += `<div class="result-row"><span class="icon">⚠️</span><span>Личный код <strong>не найден</strong> — обязателен формат XXXX 22</span></div>`;
-      }
-
-      // Итоговый совет
-      html += `<br>`;
-      if (allOk && result.hasPersonalCode) {
-        html += `<div>🎉 Всё отлично! Адрес и личный код указаны верно.</div>`;
-      } else if (allOk && !result.hasPersonalCode) {
-        html += `<div>💡 Адрес верный, но не забудьте добавить ваш личный код в поле имени получателя (формат: XXXX 22). Напишите менеджеру, чтобы узнать свой код.</div>`;
-      } else {
-        html += `<div>💡 Посмотрите видео выше и скопируйте адрес с сайта — все поля должны совпадать.</div>`;
-      }
-
-      resultArea.className     = 'result-box ' + (allOk ? 'ok' : 'err');
-      resultArea.innerHTML     = html;
-      resultArea.style.display = 'block';
-
-    } catch (err) {
-      progressWrap.style.display = 'none';
-      resultArea.className       = 'result-box err';
-      resultArea.innerHTML       = '❌ Ошибка: ' + err.message;
-      resultArea.style.display   = 'block';
-    } finally {
-      analyzeBtn.disabled  = false;
-      analyzeBtn.innerHTML = '🔍 Проверить адрес';
-      setTimeout(() => { progressWrap.style.display = 'none'; }, 1500);
-    }
-  });
-
-  // Файл → base64 (без префикса data:...)
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload  = e => resolve(e.target.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // ═══════════════════════════════════════════════════
-  // БЛОК ЛИЧНОГО КОДА
-  // ═══════════════════════════════════════════════════
-
-  const WORKER = 'https://code-generator.lazyshadow777.workers.dev';
-  const codeValueEl  = document.getElementById('mycodeValue');
-  const codeInlineEl = document.getElementById('mycodeInline');
-  const copyCodeBtn  = document.getElementById('copyCodeBtn');
-  const refreshCodeBtn = document.getElementById('refreshCodeBtn');
-
-  let currentCode = null;
-
-  async function loadCode() {
-    codeValueEl.innerHTML = '<span class="code-loader">⏳ Загружаю...</span>';
-    try {
-      const res = await fetch(`${WORKER}/api/get-code`);
-      const data = await res.json();
-      currentCode = data.code;
-      codeValueEl.textContent = currentCode;
-      if (codeInlineEl) codeInlineEl.textContent = currentCode;
-    } catch (e) {
-      codeValueEl.innerHTML = '<span class="code-loader">❌ Ошибка загрузки</span>';
-    }
-  }
-
-  async function refreshCode() {
-    refreshCodeBtn.disabled = true;
-    codeValueEl.innerHTML = '<span class="code-loader">🔄 Обновляю...</span>';
-    try {
-      const res = await fetch(`${WORKER}/api/refresh-code`, { method: 'POST' });
-      const data = await res.json();
-      currentCode = data.code;
-      codeValueEl.textContent = currentCode;
-      if (codeInlineEl) codeInlineEl.textContent = currentCode;
-    } catch (e) {
-      codeValueEl.innerHTML = '<span class="code-loader">❌ Ошибка</span>';
-    } finally {
-      refreshCodeBtn.disabled = false;
-    }
-  }
-
-  copyCodeBtn.addEventListener('click', () => {
-    if (!currentCode) return;
-    if (copyText(currentCode)) {
-      copyCodeBtn.innerHTML = '✅ Скопировано';
-      copyCodeBtn.style.background = '#22c55e';
-      setTimeout(() => { copyCodeBtn.innerHTML = '📋 Скопировать код'; copyCodeBtn.style.background = ''; }, 1500);
-    }
-  });
-
-  refreshCodeBtn.addEventListener('click', refreshCode);
-
-  // Загружаем код при открытии страницы
-  loadCode();
-
 })();
 </script>
 </body>
