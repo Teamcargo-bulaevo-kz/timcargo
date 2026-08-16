@@ -96,10 +96,9 @@
     .btn-outline { background: transparent; color: white; border: 1.5px solid var(--border-color); backdrop-filter: blur(4px); }
     .btn-outline:hover { border-color: var(--red-accent); box-shadow: 0 0 20px rgba(232,17,45,0.25); background: rgba(232,17,45,0.08); transform: translateY(-2px); }
     .btn-small { padding: 0.7rem 1.6rem; font-size: 0.9rem; }
-    .qr-block { display: flex; flex-direction: column; align-items: center; margin-top: 1rem; }
-    .qr-block img { width: 80vw; max-width: 400px; height: auto; border-radius: 20px; background: white; padding: 12px; box-shadow: 0 0 20px rgba(232, 17, 45, 0.4); cursor: pointer; }
-    .qr-block img:hover { transform: scale(1.05); }
-    .qr-block span { margin-top: 0.5rem; color: var(--text-muted); font-size: 0.85rem; }
+    .apk-block { display: flex; flex-direction: column; align-items: center; margin-top: 1.2rem; gap: 0.6rem; }
+    .apk-btn { font-size: 1.15rem; padding: 1.1rem 2.6rem; }
+    .apk-note { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
     .sticky-contact { position: fixed; bottom: 25px; right: 25px; z-index: 999; display: none; animation: pop-in 0.4s ease; }
     @keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     .tariffs-section { padding: 3rem 0; }
@@ -212,9 +211,9 @@
     <a href="#contacts" class="btn btn-primary" data-i18n="btnContact">💬 Связаться</a>
     <button class="btn btn-outline" id="shareBtn" data-i18n="btnShare">🔗 Поделиться сайтом</button>
   </div>
-  <div class="qr-block">
-    <img src="qr.jpeg" alt="QR-код сайта" id="qrCodeImg" onerror="this.style.display='none';">
-    <span data-i18n="qrCaption">Отсканируйте, чтобы открыть сайт</span>
+  <div class="apk-block">
+    <a href="base.apk" download class="btn btn-primary apk-btn" data-i18n="apkBtn">📥 Скачать приложение</a>
+    <span class="apk-note" data-i18n="apkNote">Приложение Pinduoduo для Android (APK)</span>
   </div>
 </section>
 
@@ -302,7 +301,7 @@
         <div class="reminder" data-i18n="reminderText">⚠️ Личный код (XXXX 22) обязателен! Узнайте свой код у менеджера.</div>
       </div>
       <div class="tutorial-card"><h3 data-i18n="tut2Title">💳 Как привязать карту</h3><div style="background:#111; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;" data-i18n="videoSoon">🎬 Видео скоро</div></div>
-      <div class="tutorial-card"><h3 data-i18n="tut3Title">🔍 Как отследить посылку</h3><iframe src="https://www.youtube.com/embed/PRontztzV80" style="width:100%; aspect-ratio:16/9; border-radius:12px;" allowfullscreen></iframe></div>
+      <div class="tutorial-card"><h3 data-i18n="tut3Title">🔍 Как отследить посылку</h3><iframe src="https://www.youtube.com/embed/PRontztzV80" style="width:100%; aspect-ratio:16/9; border-radius:12px; margin-bottom:1rem;" allowfullscreen></iframe><a href="https://nord-cargo.kz/" target="_blank" rel="noopener" class="btn btn-outline btn-small" style="width:100%;" data-i18n="trackBtn">📦 Отследить на NordCargo</a></div>
     </div>
   </section>
 
@@ -314,7 +313,7 @@
       <a href="tel:+77773363666" class="btn btn-outline" data-i18n="callBtn">📞 Позвонить</a>
     </div>
     <div class="contact-card">
-      <p data-i18n-html="contactAddress"><strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30</p>
+      <p data-i18n-html="contactAddress"><strong>📍 Адрес:</strong> СКО, р-н М. Жумабаева, г. Булаево, ул. Целинная, 30</p>
       <p data-i18n-html="contactSchedule"><strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00</p>
       <button class="btn btn-outline btn-small" id="mapBtn" style="margin-top:1rem;" data-i18n="mapBtnText">🗺️ Открыть карту</button>
     </div>
@@ -345,7 +344,7 @@
       heroTagline: 'Ваши покупки — наша забота',
       heroFeat1: 'Быстро', heroFeat2: 'Надёжно', heroFeat3: 'По факту веса',
       btnContact: '💬 Связаться', btnShare: '🔗 Поделиться сайтом',
-      qrCaption: 'Отсканируйте, чтобы открыть сайт',
+      apkBtn: '📥 Скачать приложение', apkNote: 'Приложение Pinduoduo для Android (APK)',
       tariffsTitle: 'Тарифы на доставку',
       tariffsDesc: 'Прозрачные цены без скрытых платежей. Оплата только за фактический вес.',
       tariffW1: 'от 100 г', tariffW2: 'от 5 кг', tariffW3: 'от 10 кг', tariffW4: 'от 20 кг',
@@ -367,9 +366,9 @@
       copyBtnText: '📋 Копировать', copiedText: '✅ Скопировано',
       reminderText: '⚠️ Личный код (XXXX 22) обязателен! Узнайте свой код у менеджера.',
       tut2Title: '💳 Как привязать карту', videoSoon: '🎬 Видео скоро',
-      tut3Title: '🔍 Как отследить посылку',
+      tut3Title: '🔍 Как отследить посылку', trackBtn: '📦 Отследить на NordCargo',
       contactsTitle: 'Свяжитесь с нами', callBtn: '📞 Позвонить',
-      contactAddress: '<strong>📍 Адрес:</strong> г. Булаево, ул. Целинная, 30',
+      contactAddress: '<strong>📍 Адрес:</strong> СКО, р-н М. Жумабаева, г. Булаево, ул. Целинная, 30',
       contactSchedule: '<strong>🕙 График работы:</strong> Ежедневно 10:00 – 20:00',
       mapBtnText: '🗺️ Открыть карту',
       faqTitle: 'Часто спрашивают',
@@ -391,7 +390,7 @@
       heroTagline: 'Сіздің тапсырысыңыз — біздің қамқорлығымыз',
       heroFeat1: 'Жылдам', heroFeat2: 'Сенімді', heroFeat3: 'Нақты салмақ бойынша',
       btnContact: '💬 Байланысу', btnShare: '🔗 Сайтпен бөлісу',
-      qrCaption: 'Сайтты ашу үшін сканерлеңіз',
+      apkBtn: '📥 Қосымшаны жүктеу', apkNote: 'Android үшін Pinduoduo қосымшасы (APK)',
       tariffsTitle: 'Жеткізу тарифтары',
       tariffsDesc: 'Жасырын төлемдерсіз ашық бағалар. Тек нақты салмақ бойынша төлем.',
       tariffW1: '100 г-нан', tariffW2: '5 кг-нан', tariffW3: '10 кг-нан', tariffW4: '20 кг-нан',
@@ -413,9 +412,9 @@
       copyBtnText: '📋 Көшіру', copiedText: '✅ Көшірілді',
       reminderText: '⚠️ Жеке код (XXXX 22) міндетті! Кодыңызды менеджерден біліңіз.',
       tut2Title: '💳 Картаны қалай байлау керек', videoSoon: '🎬 Бейне жақында',
-      tut3Title: '🔍 Сәлемдемені қалай бақылау керек',
+      tut3Title: '🔍 Сәлемдемені қалай бақылау керек', trackBtn: '📦 NordCargo арқылы бақылау',
       contactsTitle: 'Бізбен байланысыңыз', callBtn: '📞 Қоңырау шалу',
-      contactAddress: '<strong>📍 Мекенжай:</strong> Булаево қ., Целинная көш., 30',
+      contactAddress: '<strong>📍 Мекенжай:</strong> СҚО, М. Жұмабаев ауданы, Булаево қ., Целинная көш., 30',
       contactSchedule: '<strong>🕙 Жұмыс кестесі:</strong> Күн сайын 10:00 – 20:00',
       mapBtnText: '🗺️ Картаны ашу',
       faqTitle: 'Жиі қойылатын сұрақтар',
@@ -490,7 +489,7 @@
   });
 
   document.getElementById('mapBtn').addEventListener('click', () =>
-    window.open('https://2gis.kz/bulaevo/geo/70030076178855490', '_blank'));
+    window.open('https://2gis.kz/bulaevo/search/%D1%83%D0%BB.%20%D0%A6%D0%B5%D0%BB%D0%B8%D0%BD%D0%BD%D0%B0%D1%8F%2030', '_blank'));
 
   // ── Копирование адреса ──
   function copyText(txt) {
