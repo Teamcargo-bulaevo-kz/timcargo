@@ -96,9 +96,10 @@
     .btn-outline { background: transparent; color: white; border: 1.5px solid var(--border-color); backdrop-filter: blur(4px); }
     .btn-outline:hover { border-color: var(--red-accent); box-shadow: 0 0 20px rgba(232,17,45,0.25); background: rgba(232,17,45,0.08); transform: translateY(-2px); }
     .btn-small { padding: 0.7rem 1.6rem; font-size: 0.9rem; }
-    .apk-block { display: flex; flex-direction: column; align-items: center; margin-top: 1.2rem; gap: 0.6rem; }
-    .apk-btn { font-size: 1.15rem; padding: 1.1rem 2.6rem; }
+    .apk-block { display: flex; flex-direction: column; align-items: center; margin-top: 1.2rem; gap: 0.9rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .apk-btn { font-size: 1.1rem; padding: 1.05rem 2.4rem; width: 100%; }
     .apk-note { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+    .apk-guide-img { width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
     .sticky-contact { position: fixed; bottom: 25px; right: 25px; z-index: 999; display: none; animation: pop-in 0.4s ease; }
     @keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     .tariffs-section { padding: 3rem 0; }
@@ -212,8 +213,9 @@
     <button class="btn btn-outline" id="shareBtn" data-i18n="btnShare">🔗 Поделиться сайтом</button>
   </div>
   <div class="apk-block">
-    <a href="base.apk" download class="btn btn-primary apk-btn" data-i18n="apkBtn">📥 Скачать приложение</a>
-    <span class="apk-note" data-i18n="apkNote">Приложение Pinduoduo для Android (APK)</span>
+    <a href="https://m.pinduoduo.com/" target="_blank" rel="noopener" class="btn btn-primary apk-btn" data-i18n="apkBtn">📥 Скачать приложение</a>
+    <span class="apk-note" data-i18n="apkNote">Откройте ссылку и нажмите там, куда указывает стрелка</span>
+    <img src="pinduoduo-guide.jpg" alt="Как скачать Pinduoduo" class="apk-guide-img">
   </div>
 </section>
 
@@ -344,7 +346,7 @@
       heroTagline: 'Ваши покупки — наша забота',
       heroFeat1: 'Быстро', heroFeat2: 'Надёжно', heroFeat3: 'По факту веса',
       btnContact: '💬 Связаться', btnShare: '🔗 Поделиться сайтом',
-      apkBtn: '📥 Скачать приложение', apkNote: 'Приложение Pinduoduo для Android (APK)',
+      apkBtn: '📥 Скачать приложение', apkNote: 'Откройте ссылку и нажмите там, куда указывает стрелка на фото ниже',
       tariffsTitle: 'Тарифы на доставку',
       tariffsDesc: 'Прозрачные цены без скрытых платежей. Оплата только за фактический вес.',
       tariffW1: 'от 100 г', tariffW2: 'от 5 кг', tariffW3: 'от 10 кг', tariffW4: 'от 20 кг',
@@ -390,7 +392,7 @@
       heroTagline: 'Сіздің тапсырысыңыз — біздің қамқорлығымыз',
       heroFeat1: 'Жылдам', heroFeat2: 'Сенімді', heroFeat3: 'Нақты салмақ бойынша',
       btnContact: '💬 Байланысу', btnShare: '🔗 Сайтпен бөлісу',
-      apkBtn: '📥 Қосымшаны жүктеу', apkNote: 'Android үшін Pinduoduo қосымшасы (APK)',
+      apkBtn: '📥 Қосымшаны жүктеу', apkNote: 'Сілтемені ашып, төмендегі суреттегі көрсеткі бағытталған жерге басыңыз',
       tariffsTitle: 'Жеткізу тарифтары',
       tariffsDesc: 'Жасырын төлемдерсіз ашық бағалар. Тек нақты салмақ бойынша төлем.',
       tariffW1: '100 г-нан', tariffW2: '5 кг-нан', tariffW3: '10 кг-нан', tariffW4: '20 кг-нан',
